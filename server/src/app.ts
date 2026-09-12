@@ -11,6 +11,7 @@ import clinicalRoutes from './routes/clinical.routes';
 import bedRoutes from './routes/bed.routes';
 import emergencyRoutes from './routes/emergency.routes';
 import billingRoutes from './routes/billing.routes';
+import './models/Department';
 
 const app: Application = express();
 

@@ -126,3 +126,33 @@
     @apply font-sans;
   }
 }
+
+@keyframes neon-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.08); }
+}
+
+@keyframes neon-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.neon-page {
+  background:
+    radial-gradient(circle at 12% 15%, rgba(34, 211, 238, 0.16), transparent 28rem),
+    radial-gradient(circle at 88% 80%, rgba(217, 70, 239, 0.16), transparent 30rem),
+    #070b17;
+}
+
+.neon-orb {
+  animation: neon-pulse 7s ease-in-out infinite;
+}
+
+.neon-rise {
+  animation: neon-rise 650ms ease-out both;
+}
+
+.neon-grid {
+  background-image: linear-gradient(rgba(103, 232, 249, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(103, 232, 249, 0.05) 1px, transparent 1px);
+  background-size: 42px 42px;
+}

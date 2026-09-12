@@ -1,6 +1,6 @@
+import path from 'path';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import bcrypt from 'bcryptjs';
 
 import User, { Role } from '../models/User';
 import Department from '../models/Department';
@@ -9,7 +9,17 @@ import Patient from '../models/Patient';
 import Ward from '../models/Ward';
 import Bed from '../models/Bed';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+const patientFirstNames = ['Ayesha', 'Bilal', 'Hina', 'Usman', 'Sana', 'Hamza', 'Iqra', 'Fahad', 'Maham', 'Zain', 'Maryam', 'Talha', 'Laiba', 'Danish', 'Anam', 'Hassan', 'Fatima', 'Owais', 'Mehwish', 'Saad'];
+const patientLastNames = ['Khan', 'Ahmed', 'Malik', 'Hussain', 'Iqbal', 'Sheikh', 'Qureshi', 'Butt', 'Raza', 'Javed'];
+const doctorNames = [
+  ['Imran', 'Khan', 'Cardiologist', 'Cardiology'], ['Nimra', 'Ahmed', 'Neurologist', 'Neurology'],
+  ['Asad', 'Malik', 'Orthopedic Surgeon', 'Orthopedics'], ['Saira', 'Hussain', 'Dermatologist', 'Dermatology'],
+  ['Hamid', 'Qureshi', 'Pediatrician', 'Pediatrics'], ['Rida', 'Sheikh', 'Gynecologist', 'Gynecology'],
+  ['Kamran', 'Raza', 'General Physician', 'General Medicine'], ['Mariam', 'Javed', 'Psychiatrist', 'Psychiatry'],
+  ['Waleed', 'Butt', 'ENT Specialist', 'ENT'], ['Alina', 'Iqbal', 'Radiologist', 'Radiology'],
+] as const;
 
 const connectDB = async () => {
   try {
@@ -21,81 +31,104 @@ const connectDB = async () => {
   }
 };
 
+const upsertUser = async (name: string, email: string, password: string, role: Role) => {
+  let user = await User.findOne({ email }).select('+password');
+
+  if (!user) {
+    user = await User.create({ name, email, password, role });
+  } else {
+    user.name = name;
+    user.password = password;
+    user.role = role;
+    user.isActive = true;
+    await user.save();
+  }
+
+  return user;
+};
+
 const importData = async () => {
   try {
     await connectDB();
 
-    // Clear existing data
-    await User.deleteMany();
-    await Department.deleteMany();
-    await Doctor.deleteMany();
-    await Patient.deleteMany();
-    await Ward.deleteMany();
-    await Bed.deleteMany();
+    const admin = await upsertUser('Ahmad Khan', 'ahmad@gmail.com', 'ahmad12345', Role.ADMIN);
+    console.log(`Admin ready: ${admin.email} / ahmad12345`);
 
-    console.log('Data Cleared!');
-
-    // 1. Create Admin
-    const salt = await bcrypt.genSalt(10);
-    const adminPassword = await bcrypt.hash('admin123', salt);
-    
-    await User.create({
-      name: 'Admin User',
-      email: 'admin@hms.com',
-      password: adminPassword,
-      role: Role.ADMIN,
-    });
-
-    // 2. Create Departments
-    const cardiology = await Department.create({ name: 'Cardiology', description: 'Heart center' });
-    const neurology = await Department.create({ name: 'Neurology', description: 'Brain center' });
-    const orthopedics = await Department.create({ name: 'Orthopedics', description: 'Bones and joints' });
-
-    // 3. Create Doctors
-    const doctorPassword = await bcrypt.hash('doctor123', salt);
-    
-    const userDoc1 = await User.create({ name: 'Dr. John Doe', email: 'john@hms.com', password: doctorPassword, role: Role.DOCTOR });
-    await Doctor.create({
-      user: userDoc1._id,
-      name: 'Dr. John Doe',
-      specialization: 'Cardiologist',
-      department: cardiology._id,
-      qualification: 'MBBS, MD',
-      experience: 10,
-      consultationFee: 1500,
-      workingDays: ['Monday', 'Wednesday', 'Friday'],
-      workingHours: { start: '09:00', end: '17:00' }
-    });
-
-    const userDoc2 = await User.create({ name: 'Dr. Sarah Smith', email: 'sarah@hms.com', password: doctorPassword, role: Role.DOCTOR });
-    await Doctor.create({
-      user: userDoc2._id,
-      name: 'Dr. Sarah Smith',
-      specialization: 'Neurologist',
-      department: neurology._id,
-      qualification: 'MBBS, MS',
-      experience: 8,
-      consultationFee: 2000,
-      workingDays: ['Tuesday', 'Thursday', 'Saturday'],
-      workingHours: { start: '10:00', end: '18:00' }
-    });
-
-    // 4. Create Wards & Beds
-    const generalWard = await Ward.create({ name: 'General Ward A', type: 'General' });
-    const icuWard = await Ward.create({ name: 'ICU Ward 1', type: 'ICU' });
-
-    for (let i = 1; i <= 5; i++) {
-      await Bed.create({ bedNumber: `GW-A-${i}`, ward: generalWard._id, type: 'General' });
-    }
-    for (let i = 1; i <= 3; i++) {
-      await Bed.create({ bedNumber: `ICU-1-${i}`, ward: icuWard._id, type: 'ICU' });
+    const departmentNames = ['Cardiology', 'Neurology', 'Orthopedics', 'Dermatology', 'Pediatrics', 'Gynecology', 'General Medicine', 'Psychiatry', 'ENT', 'Radiology'];
+    const departments = new Map<string, mongoose.Types.ObjectId>();
+    for (const name of departmentNames) {
+      const department = await Department.findOneAndUpdate(
+        { name },
+        { $setOnInsert: { name, description: `${name} department` } },
+        { upsert: true, new: true },
+      );
+      departments.set(name, department._id);
     }
 
-    console.log('Seed Data Imported Successfully!');
-    process.exit();
+    for (let index = 0; index < 100; index += 1) {
+      const firstName = patientFirstNames[index % patientFirstNames.length];
+      const lastName = patientLastNames[Math.floor(index / patientFirstNames.length)];
+      const sequence = String(index + 1).padStart(3, '0');
+      const name = `${firstName} ${lastName}`;
+      const email = `patient${sequence}@hms.com`;
+      const user = await upsertUser(name, email, `${firstName.toLowerCase()}12345`, Role.PATIENT);
+
+      await Patient.findOneAndUpdate(
+        { user: user._id },
+        {
+          $set: {
+            name, email, phone: `0300${String(1000000 + index).padStart(7, '0')}`,
+            dateOfBirth: new Date(1985 + (index % 20), index % 12, (index % 27) + 1),
+            gender: index % 2 === 0 ? 'Female' : 'Male', bloodGroup: ['A+', 'B+', 'O+', 'AB+'][index % 4],
+            address: `House ${index + 1}, Gulberg, Lahore, Pakistan`, emergencyContact: `0310${String(2000000 + index).padStart(7, '0')}`,
+          },
+          $setOnInsert: { user: user._id, patientId: `PAT-${String(index + 1).padStart(5, '0')}` },
+        },
+        { upsert: true, new: true },
+      );
+    }
+
+    for (let index = 0; index < doctorNames.length; index += 1) {
+      const [firstName, lastName, specialization, departmentName] = doctorNames[index];
+      const name = `Dr. ${firstName} ${lastName}`;
+      const email = `doctor${String(index + 1).padStart(2, '0')}@hms.com`;
+      const user = await upsertUser(name, email, `${firstName.toLowerCase()}12345`, Role.DOCTOR);
+
+      await Doctor.findOneAndUpdate(
+        { user: user._id },
+        {
+          $set: {
+            name, specialization, department: departments.get(departmentName), qualification: 'MBBS, FCPS',
+            experience: 5 + index, consultationFee: 1500 + (index * 100),
+            workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+            workingHours: { start: '09:00', end: '17:00' }, status: 'Available', isActive: true,
+          },
+          $setOnInsert: { user: user._id, doctorId: `DOC-${String(index + 1).padStart(4, '0')}` },
+        },
+        { upsert: true, new: true },
+      );
+    }
+
+    const wards = [{ name: 'General Ward A', type: 'General' }, { name: 'ICU Ward 1', type: 'ICU' }];
+    for (const wardData of wards) {
+      const ward = await Ward.findOneAndUpdate({ name: wardData.name }, { $setOnInsert: wardData }, { upsert: true, new: true });
+      const bedCount = wardData.type === 'ICU' ? 10 : 25;
+      for (let bedIndex = 1; bedIndex <= bedCount; bedIndex += 1) {
+        const prefix = wardData.type === 'ICU' ? 'ICU-1' : 'GW-A';
+        const bedNumber = `${prefix}-${bedIndex}`;
+        await Bed.updateOne({ bedNumber }, { $setOnInsert: { bedNumber, ward: ward._id, type: wardData.type } }, { upsert: true });
+      }
+    }
+
+    console.log('Seed complete: 1 admin, 100 patients, 10 doctors, wards, and beds are ready.');
+    console.log('Admin login: ahmad@gmail.com / ahmad12345');
+    console.log('Patient passwords: first-name lowercase + 12345, for example patient001 uses ayesha12345.');
+    console.log('Doctor passwords: first-name lowercase + 12345, for example doctor01 uses imran12345.');
   } catch (error) {
     console.error('Error importing data:', error);
-    process.exit(1);
+    process.exitCode = 1;
+  } finally {
+    await mongoose.disconnect();
   }
 };
 
