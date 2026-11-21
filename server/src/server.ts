@@ -6,6 +6,9 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 import app from './app';
 import connectDB from './config/db';
 import logger from './utils/logger';
+import { getJwtSecret } from './config/auth';
+
+getJwtSecret();
 
 const PORT = process.env.PORT || 5000;
 

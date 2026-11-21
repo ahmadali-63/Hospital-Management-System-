@@ -12,6 +12,12 @@ import bedRoutes from './routes/bed.routes';
 import emergencyRoutes from './routes/emergency.routes';
 import billingRoutes from './routes/billing.routes';
 import './models/Department';
+import Patient from './models/Patient';
+import Doctor from './models/Doctor';
+import Appointment from './models/Appointment';
+import Bed from './models/Bed';
+import Admission from './models/Admission';
+import { protect } from './middlewares/auth.middleware';
 
 const app: Application = express();
 
@@ -41,6 +47,45 @@ app.use('/api/clinical', clinicalRoutes);
 app.use('/api/beds', bedRoutes);
 app.use('/api/emergency', emergencyRoutes);
 app.use('/api/billing', billingRoutes);
+
+// Dashboard Statistics Overview
+app.get('/api/stats', protect, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const totalPatients = await Patient.countDocuments();
+    const availableDoctors = await Doctor.countDocuments({ status: 'Available', isActive: true });
+
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+    const todayAppointments = await Appointment.countDocuments({
+      date: { $gte: startOfDay, $lte: endOfDay },
+    });
+
+    const totalBeds = await Bed.countDocuments();
+    const availableBeds = await Bed.countDocuments({ status: 'Available' });
+
+    const recentAdmissions = await Admission.find()
+      .populate('patient', 'name patientId')
+      .populate('ward', 'name')
+      .sort('-admissionDate')
+      .limit(5);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalPatients,
+        availableDoctors,
+        todayAppointments,
+        availableBeds,
+        totalBeds,
+        recentAdmissions,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Health Check
 app.get('/health', (req: Request, res: Response) => {

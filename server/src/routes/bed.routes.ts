@@ -12,6 +12,8 @@ router.use(protect);
 // Anyone logged in can view beds (useful for Doctor/Patient dashboards to see availability)
 // In a stricter system we might limit PATIENT to only their own bed
 router.get('/', BedController.getBeds);
+router.get('/wards', BedController.getWards);
+router.get('/admissions', BedController.getAdmissions);
 
 // Only ADMIN can manage admissions and discharges
 router.post('/admissions', authorize(Role.ADMIN), validate(admitPatientSchema), BedController.admitPatient);

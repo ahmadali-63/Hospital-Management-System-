@@ -2,6 +2,18 @@ import { Request, Response, NextFunction } from 'express';
 import { DoctorService } from '../services/doctor.service';
 
 export class DoctorController {
+  static async getDepartments(req: Request, res: Response, next: NextFunction) {
+    try {
+      const departments = await DoctorService.getDepartments();
+      res.status(200).json({
+        success: true,
+        data: { departments },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async createDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const doctor = await DoctorService.createDoctor(req.body);

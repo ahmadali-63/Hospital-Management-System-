@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
+import { getJwtSecret } from '../config/auth';
 
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
   let token;
@@ -14,7 +15,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
   }
 
   try {
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
+    const decoded: any = jwt.verify(token, getJwtSecret());
     const user = await User.findById(decoded.id).select('-password');
     
     if (!user) {

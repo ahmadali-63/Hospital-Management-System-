@@ -1,5 +1,6 @@
 import Bed, { IBed } from '../models/Bed';
 import Admission, { IAdmission } from '../models/Admission';
+import Ward, { IWard } from '../models/Ward';
 import Patient from '../models/Patient';
 import { Role } from '../models/User';
 
@@ -11,6 +12,24 @@ export class BedService {
     if (query.type) filter.type = query.type;
 
     return Bed.find(filter).populate('ward').populate('currentPatient').exec();
+  }
+
+  static async getWards(): Promise<IWard[]> {
+    return Ward.find({ isActive: true }).sort('name').exec();
+  }
+
+  static async getAdmissions(query: any): Promise<IAdmission[]> {
+    const filter: any = {};
+    if (query.status) filter.status = query.status;
+    if (query.patient) filter.patient = query.patient;
+
+    return Admission.find(filter)
+      .populate('patient')
+      .populate('doctor')
+      .populate('ward')
+      .populate('bed')
+      .sort('-admissionDate')
+      .exec();
   }
 
   static async admitPatient(data: any): Promise<IAdmission> {

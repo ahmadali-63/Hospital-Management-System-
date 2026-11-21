@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken';
 import User, { Role, IUser } from '../models/User';
 import Patient from '../models/Patient';
+import { getJwtSecret } from '../config/auth';
 
 export class AuthService {
   static generateToken(id: string, role: string): string {
-    return jwt.sign({ id, role }, process.env.JWT_SECRET || 'fallback_secret', {
+    return jwt.sign({ id, role }, getJwtSecret(), {
       expiresIn: '1d',
     });
   }

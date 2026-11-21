@@ -1,7 +1,12 @@
 import Doctor, { IDoctor } from '../models/Doctor';
+import Department, { IDepartment } from '../models/Department';
 import User, { Role } from '../models/User';
 
 export class DoctorService {
+  static async getDepartments(): Promise<IDepartment[]> {
+    return Department.find({ isActive: true }).sort('name').exec();
+  }
+
   static async createDoctor(data: any): Promise<IDoctor> {
     const existingUser = await User.findOne({ email: data.email });
     if (existingUser) {

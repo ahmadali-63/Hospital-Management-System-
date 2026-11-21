@@ -8,6 +8,7 @@ import { Role } from '../models/User';
 const router = Router();
 
 // Publicly accessible (e.g. for patient searching)
+router.get('/departments', DoctorController.getDepartments);
 router.get('/', protect, DoctorController.getDoctors);
 router.get('/:id', protect, DoctorController.getDoctorById);
 

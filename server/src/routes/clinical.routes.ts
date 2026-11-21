@@ -11,10 +11,12 @@ router.use(protect);
 
 // Medical Records
 router.post('/records', authorize(Role.DOCTOR), validate(addMedicalRecordSchema), ClinicalController.addMedicalRecord);
+router.get('/records', ClinicalController.getAllMedicalRecords);
 router.get('/records/:patientId', ClinicalController.getMedicalRecords); // Allowed for PATIENT (own) and DOCTOR (assigned)
 
 // Prescriptions
 router.post('/prescriptions', authorize(Role.DOCTOR), validate(createPrescriptionSchema), ClinicalController.createPrescription);
+router.get('/prescriptions', ClinicalController.getAllPrescriptions);
 router.get('/prescriptions/:patientId', ClinicalController.getPrescriptions); // Allowed for PATIENT (own) and DOCTOR
 
 export default router;

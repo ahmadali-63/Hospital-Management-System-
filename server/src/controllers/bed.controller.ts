@@ -11,6 +11,24 @@ export class BedController {
     }
   }
 
+  static async getWards(req: Request, res: Response, next: NextFunction) {
+    try {
+      const wards = await BedService.getWards();
+      res.status(200).json({ success: true, data: { wards } });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getAdmissions(req: Request, res: Response, next: NextFunction) {
+    try {
+      const admissions = await BedService.getAdmissions(req.query);
+      res.status(200).json({ success: true, data: { admissions } });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async admitPatient(req: Request, res: Response, next: NextFunction) {
     try {
       const admission = await BedService.admitPatient(req.body);

@@ -42,9 +42,29 @@ export class ClinicalService {
     }
     
     return MedicalRecord.find({ patient: patientId })
+      .populate('patient')
       .populate('doctor')
       .populate('appointment')
       .sort('-createdAt')
+      .exec();
+  }
+
+  static async getAllMedicalRecords(user: any): Promise<IMedicalRecord[]> {
+    const filter: any = {};
+    if (user.role === Role.PATIENT) {
+      const patient = await Patient.findOne({ user: user._id });
+      if (patient) filter.patient = patient._id;
+    } else if (user.role === Role.DOCTOR) {
+      const doctor = await Doctor.findOne({ user: user._id });
+      if (doctor) filter.doctor = doctor._id;
+    }
+
+    return MedicalRecord.find(filter)
+      .populate('patient')
+      .populate('doctor')
+      .populate('appointment')
+      .sort('-createdAt')
+      .limit(100)
       .exec();
   }
 
@@ -78,9 +98,29 @@ export class ClinicalService {
     }
 
     return Prescription.find({ patient: patientId })
+      .populate('patient')
       .populate('doctor')
       .populate('appointment')
       .sort('-createdAt')
+      .exec();
+  }
+
+  static async getAllPrescriptions(user: any): Promise<IPrescription[]> {
+    const filter: any = {};
+    if (user.role === Role.PATIENT) {
+      const patient = await Patient.findOne({ user: user._id });
+      if (patient) filter.patient = patient._id;
+    } else if (user.role === Role.DOCTOR) {
+      const doctor = await Doctor.findOne({ user: user._id });
+      if (doctor) filter.doctor = doctor._id;
+    }
+
+    return Prescription.find(filter)
+      .populate('patient')
+      .populate('doctor')
+      .populate('appointment')
+      .sort('-createdAt')
+      .limit(100)
       .exec();
   }
 }

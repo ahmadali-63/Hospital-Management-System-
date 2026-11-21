@@ -22,6 +22,16 @@ export class ClinicalController {
     }
   }
 
+  static async getAllMedicalRecords(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = (req as any).user;
+      const records = await ClinicalService.getAllMedicalRecords(user);
+      res.status(200).json({ success: true, data: { records } });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async createPrescription(req: Request, res: Response, next: NextFunction) {
     try {
       const user = (req as any).user;
@@ -36,6 +46,16 @@ export class ClinicalController {
     try {
       const user = (req as any).user;
       const prescriptions = await ClinicalService.getPrescriptions(req.params.patientId as string, user);
+      res.status(200).json({ success: true, data: { prescriptions } });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getAllPrescriptions(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = (req as any).user;
+      const prescriptions = await ClinicalService.getAllPrescriptions(user);
       res.status(200).json({ success: true, data: { prescriptions } });
     } catch (error) {
       next(error);

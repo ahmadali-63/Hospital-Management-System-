@@ -8,6 +8,12 @@ import Doctor from '../models/Doctor';
 import Patient from '../models/Patient';
 import Ward from '../models/Ward';
 import Bed from '../models/Bed';
+import Appointment from '../models/Appointment';
+import Admission from '../models/Admission';
+import EmergencyCase from '../models/EmergencyCase';
+import MedicalRecord from '../models/MedicalRecord';
+import Prescription from '../models/Prescription';
+import Bill from '../models/Bill';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
@@ -51,8 +57,11 @@ const importData = async () => {
   try {
     await connectDB();
 
-    const admin = await upsertUser('Ahmad Khan', 'ahmad@gmail.com', 'ahmad12345', Role.ADMIN);
-    console.log(`Admin ready: ${admin.email} / ahmad12345`);
+    // Primary Admin from README
+    const admin = await upsertUser('Hospital Admin', 'admin@hms.com', 'admin123', Role.ADMIN);
+    // Secondary Admin
+    await upsertUser('Ahmad Khan', 'ahmad@gmail.com', 'ahmad12345', Role.ADMIN);
+    console.log(`Admin ready: ${admin.email} / admin123`);
 
     const departmentNames = ['Cardiology', 'Neurology', 'Orthopedics', 'Dermatology', 'Pediatrics', 'Gynecology', 'General Medicine', 'Psychiatry', 'ENT', 'Radiology'];
     const departments = new Map<string, mongoose.Types.ObjectId>();
@@ -109,6 +118,29 @@ const importData = async () => {
       );
     }
 
+    // Primary Doctor from README
+    const johnUser = await upsertUser('Dr. John Smith', 'john@hms.com', 'doctor123', Role.DOCTOR);
+    const johnDoctor = await Doctor.findOneAndUpdate(
+      { user: johnUser._id },
+      {
+        $set: {
+          name: 'Dr. John Smith',
+          specialization: 'Cardiologist',
+          department: departments.get('Cardiology'),
+          qualification: 'MBBS, MD (Cardiology)',
+          experience: 12,
+          consultationFee: 2000,
+          workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          workingHours: { start: '09:00', end: '17:00' },
+          status: 'Available',
+          isActive: true,
+        },
+        $setOnInsert: { user: johnUser._id, doctorId: 'DOC-0000' },
+      },
+      { upsert: true, new: true },
+    );
+    console.log(`Doctor ready: ${johnUser.email} / doctor123`);
+
     const wards = [{ name: 'General Ward A', type: 'General' }, { name: 'ICU Ward 1', type: 'ICU' }];
     for (const wardData of wards) {
       const ward = await Ward.findOneAndUpdate({ name: wardData.name }, { $setOnInsert: wardData }, { upsert: true, new: true });
@@ -120,10 +152,110 @@ const importData = async () => {
       }
     }
 
-    console.log('Seed complete: 1 admin, 100 patients, 10 doctors, wards, and beds are ready.');
-    console.log('Admin login: ahmad@gmail.com / ahmad12345');
-    console.log('Patient passwords: first-name lowercase + 12345, for example patient001 uses ayesha12345.');
-    console.log('Doctor passwords: first-name lowercase + 12345, for example doctor01 uses imran12345.');
+    // Seed sample clinical records, appointments, admissions, emergency cases, and billing
+    const patient1 = await Patient.findOne();
+    const doctor1 = await Doctor.findOne();
+    const ward1 = await Ward.findOne();
+    const bed1 = await Bed.findOne({ status: 'Available' });
+
+    if (patient1 && doctor1) {
+      const existingAppt = await Appointment.findOne();
+      if (!existingAppt) {
+        const appointment = await Appointment.create({
+          patient: patient1._id,
+          doctor: doctor1._id,
+          date: new Date(),
+          startTime: '10:00',
+          endTime: '10:30',
+          consultationFee: doctor1.consultationFee,
+          reason: 'Routine cardiology checkup',
+          status: 'Confirmed',
+        });
+
+        await MedicalRecord.create({
+          patient: patient1._id,
+          doctor: doctor1._id,
+          appointment: appointment._id,
+          symptoms: ['Chest tightness', 'Mild shortness of breath'],
+          diagnosis: ['Mild hypertension'],
+          treatment: 'Prescribed lifestyle adjustments and low-dose antihypertensive.',
+          notes: 'Follow up in 2 weeks.',
+        });
+
+        await Prescription.create({
+          patient: patient1._id,
+          doctor: doctor1._id,
+          appointment: appointment._id,
+          medicines: [
+            {
+              name: 'Amlodipine 5mg',
+              dosage: '1 tablet',
+              frequency: 'Once daily',
+              duration: '14 days',
+              instructions: 'Take in the morning with water.',
+            },
+          ],
+        });
+
+        await Bill.create({
+          patient: patient1._id,
+          appointment: appointment._id,
+          consultationFee: doctor1.consultationFee,
+          bedCharges: 0,
+          emergencyCharges: 0,
+          otherCharges: 0,
+          totalAmount: doctor1.consultationFee,
+          paidAmount: doctor1.consultationFee,
+          remainingAmount: 0,
+          status: 'Paid',
+        });
+      }
+    }
+
+    if (patient1 && doctor1 && ward1 && bed1) {
+      const existingAdm = await Admission.findOne({ status: 'Active' });
+      if (!existingAdm) {
+        const patient2 = await Patient.findOne().skip(1);
+        if (patient2) {
+          await Admission.create({
+            patient: patient2._id,
+            doctor: doctor1._id,
+            ward: ward1._id,
+            bed: bed1._id,
+            admissionDate: new Date(),
+            reason: 'Post-operative observation',
+            status: 'Active',
+          });
+          bed1.status = 'Occupied';
+          bed1.currentPatient = patient2._id as any;
+          await bed1.save();
+        }
+      }
+    }
+
+    const existingEmr = await EmergencyCase.findOne();
+    if (!existingEmr) {
+      await EmergencyCase.create({
+        patientName: 'Tariq Mehmood',
+        emergencyType: 'Acute Chest Pain',
+        priority: 'Critical',
+        symptoms: ['Severe chest pain', 'Profuse sweating', 'Tachycardia'],
+        doctor: doctor1?._id,
+        status: 'Under Treatment',
+      });
+      await EmergencyCase.create({
+        patientName: 'Zubair Ali',
+        emergencyType: 'Road Traffic Accident',
+        priority: 'High',
+        symptoms: ['Laceration on right arm', 'Pain in shoulder'],
+        status: 'Waiting',
+      });
+    }
+
+    console.log('Seed complete: Admin, doctors, patients, wards, beds, and sample data are ready.');
+    console.log('Admin login (README): admin@hms.com / admin123');
+    console.log('Doctor login (README): john@hms.com / doctor123');
+    console.log('Alternative Admin: ahmad@gmail.com / ahmad12345');
   } catch (error) {
     console.error('Error importing data:', error);
     process.exitCode = 1;
