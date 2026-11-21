@@ -1,14 +1,29 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
-import { ArrowRight, Eye, EyeOff, HeartPulse, CheckCircle2, AlertCircle, KeyRound, ArrowLeft } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { FormEvent, useState, useEffect, Suspense } from 'react';
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  HeartPulse,
+  CheckCircle2,
+  AlertCircle,
+  KeyRound,
+  ArrowLeft,
+  ShieldCheck,
+  Stethoscope,
+  Briefcase,
+  User,
+} from 'lucide-react';
 import { AxiosError } from 'axios';
 import api from '@/services/api';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -24,27 +39,38 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
 
+  // Auto-fill from query param (e.g. ?quick=superadmin)
+  useEffect(() => {
+    const quick = searchParams.get('quick')?.toLowerCase();
+    if (quick === 'superadmin') {
+      setEmail('superadmin@hms.com');
+      setPassword('superadmin12345');
+    } else if (quick === 'doctor') {
+      setEmail('doctor01@hms.com');
+      setPassword('doctor123');
+    }
+  }, [searchParams]);
+
   function toggleShowPassword() {
     setShowPassword((prev) => !prev);
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function executeLogin(loginEmail: string, loginPass: string) {
     setMessage('');
     setSuccessMessage('');
 
-    if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) {
+    if (!loginEmail.trim() || !/^\S+@\S+\.\S+$/.test(loginEmail)) {
       return setMessage('Enter a valid email address.');
     }
-    if (password.length < 6) {
+    if (loginPass.length < 6) {
       return setMessage('Password must be at least 6 characters.');
     }
 
     try {
       setIsLoading(true);
       const response = await api.post('/auth/login', {
-        email: email.trim(),
-        password,
+        email: loginEmail.trim(),
+        password: loginPass,
       });
 
       const user = response.data?.data?.user;
@@ -66,9 +92,35 @@ export default function LoginPage() {
       }
     } catch (error) {
       const resp = (error as AxiosError<{ message?: string }>).response;
-      setMessage(resp?.data?.message || 'Unable to log in. Please check your credentials and make sure the server is running.');
+      setMessage(resp?.data?.message || 'Unable to log in. Please check your credentials.');
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    executeLogin(email, password);
+  }
+
+  // Quick 1-Click Role Logins
+  function handleQuickLogin(roleType: 'SUPER_ADMIN' | 'DOCTOR' | 'STAFF' | 'PATIENT') {
+    if (roleType === 'SUPER_ADMIN') {
+      setEmail('superadmin@hms.com');
+      setPassword('superadmin12345');
+      executeLogin('superadmin@hms.com', 'superadmin12345');
+    } else if (roleType === 'DOCTOR') {
+      setEmail('doctor01@hms.com');
+      setPassword('doctor123');
+      executeLogin('doctor01@hms.com', 'doctor123');
+    } else if (roleType === 'STAFF') {
+      setEmail('ahmad@gmail.com');
+      setPassword('ahmad12345');
+      executeLogin('ahmad@gmail.com', 'ahmad12345');
+    } else if (roleType === 'PATIENT') {
+      setEmail('patient001@hms.com');
+      setPassword('patient123');
+      executeLogin('patient001@hms.com', 'patient123');
     }
   }
 
@@ -134,10 +186,11 @@ export default function LoginPage() {
 
   return (
     <main className="neon-page neon-grid relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-12 text-white">
-      <div className="neon-orb absolute -left-24 top-12 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl" />
-      <div className="neon-orb absolute -right-20 bottom-10 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
+      {/* Background Orbs with pointer-events-none */}
+      <div className="neon-orb absolute -left-24 top-12 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl pointer-events-none" />
+      <div className="neon-orb absolute -right-20 bottom-10 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl pointer-events-none" />
 
-      <section className="neon-rise relative w-full max-w-md rounded-3xl border border-white/20 bg-white/[0.08] p-8 shadow-[0_0_70px_rgba(34,211,238,0.16),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:p-10">
+      <section className="neon-rise relative w-full max-w-md rounded-3xl border border-white/20 bg-white/[0.08] p-8 shadow-[0_0_70px_rgba(34,211,238,0.16),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:p-10 z-10">
         <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-[0.2em] text-cyan-300">
           <HeartPulse size={20} /> NEXUS CARE
         </Link>
@@ -145,15 +198,15 @@ export default function LoginPage() {
         {/* Normal Login View */}
         {!isForgotMode ? (
           <>
-            <div className="mt-10">
-              <p className="text-sm font-medium text-fuchsia-300">Secure staff and patient access</p>
-              <h1 className="mt-2 text-4xl font-bold tracking-tight">Welcome back.</h1>
-              <p className="mt-3 text-sm leading-6 text-slate-400">
+            <div className="mt-8">
+              <p className="text-sm font-medium text-fuchsia-300">Unified Portal Access</p>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight">Welcome back.</h1>
+              <p className="mt-2 text-sm leading-6 text-slate-400">
                 Log in to continue managing care with confidence.
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-300" htmlFor="email">
                   Email address
@@ -164,7 +217,7 @@ export default function LoginPage() {
                   autoComplete="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  placeholder="Enter your email"
+                  placeholder="name@example.com"
                   className="mt-2 w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20"
                   required
                 />
@@ -260,7 +313,48 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <div className="mt-7 flex items-center justify-between gap-4 border-t border-white/10 pt-6 text-sm">
+            {/* Quick One-Click Role Logins */}
+            <div className="mt-6 pt-5 border-t border-white/10">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5">
+                Quick 1-Click Role Logins:
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('SUPER_ADMIN')}
+                  disabled={isLoading}
+                  className="flex items-center justify-center gap-1.5 rounded-lg border border-amber-400/40 bg-amber-400/10 px-2.5 py-2 text-xs font-bold text-amber-300 hover:bg-amber-400/20 transition cursor-pointer"
+                >
+                  <ShieldCheck size={14} /> Super Admin
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('DOCTOR')}
+                  disabled={isLoading}
+                  className="flex items-center justify-center gap-1.5 rounded-lg border border-emerald-400/40 bg-emerald-400/10 px-2.5 py-2 text-xs font-bold text-emerald-300 hover:bg-emerald-400/20 transition cursor-pointer"
+                >
+                  <Stethoscope size={14} /> Doctor
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('STAFF')}
+                  disabled={isLoading}
+                  className="flex items-center justify-center gap-1.5 rounded-lg border border-purple-400/40 bg-purple-400/10 px-2.5 py-2 text-xs font-bold text-purple-300 hover:bg-purple-400/20 transition cursor-pointer"
+                >
+                  <Briefcase size={14} /> Staff
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('PATIENT')}
+                  disabled={isLoading}
+                  className="flex items-center justify-center gap-1.5 rounded-lg border border-cyan-400/40 bg-cyan-400/10 px-2.5 py-2 text-xs font-bold text-cyan-300 hover:bg-cyan-400/20 transition cursor-pointer"
+                >
+                  <User size={14} /> Patient
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-5 text-sm">
               <span className="text-slate-400">New to Nexus Care?</span>
               <Link
                 href="/auth/register"
@@ -409,5 +503,19 @@ export default function LoginPage() {
         )}
       </section>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="neon-page neon-grid relative flex min-h-screen items-center justify-center text-white">
+          <div className="text-cyan-300 font-bold">Loading...</div>
+        </main>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

@@ -1,6 +1,7 @@
 # Hospital Management System (HMS) MVP
 
 ## Project Overview
+
 This project is a professional, production-structured Hospital Management System MVP. It provides a real working full-stack system focusing on role-based hospital workflows with strict Role-Based Access Control (RBAC), data privacy, and separate role portals for **Super Admin**, **Hospital Admin**, **Doctor**, **Staff**, and **Patient**.
 
 ---
@@ -27,6 +28,7 @@ This project is a professional, production-structured Hospital Management System
 ## Tech Stack
 
 ### Frontend (Client)
+
 - **Framework:** Next.js (App Router) & React
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS & Lucide React
@@ -34,6 +36,7 @@ This project is a professional, production-structured Hospital Management System
 - **HTTP Client:** Axios
 
 ### Backend (Server)
+
 - **Runtime & Framework:** Node.js & Express
 - **Language:** TypeScript
 - **Database:** MongoDB & Mongoose
@@ -87,21 +90,6 @@ hospital-management-system/
 
 ---
 
-## Environment Variables (`.env`)
-
-Configure the root `.env` file before running the application:
-
-```env
-PORT=5000
-NODE_ENV=development
-CLIENT_URL=http://localhost:3000
-MONGO_URI=mongodb://127.0.0.1:27017/hms
-JWT_SECRET=super_secret_jwt_key_that_is_at_least_64_characters_long_for_secure_signing_in_production_environments
-
-# Super Admin Account Configuration
-SUPER_ADMIN_NAME=Super Admin
-SUPER_ADMIN_EMAIL=superadmin@hms.com
-SUPER_ADMIN_PASSWORD=superadmin12345
 ```
 
 ---
@@ -114,16 +102,21 @@ npm install
 ```
 
 ### 2. Seed Initial Demo Data (Optional)
+
 To seed initial departments, doctors, wards, and beds:
+
 ```bash
 npm run seed --workspace=server
 ```
 
 ### 3. Start Development Servers
+
 From the root directory:
+
 ```bash
 npm run dev
 ```
+
 - Client runs on: `http://localhost:3000`
 - API Server runs on: `http://localhost:5000`
 
@@ -183,4 +176,4 @@ npm run dev
   - `POST /api/billing` - Generate bill
   - `GET /api/billing` - View invoices
   - `POST /api/billing/:id/pay` - Record payment
-"# Hospital-Management-System-" 
+"# Hospital-Management-System-"
