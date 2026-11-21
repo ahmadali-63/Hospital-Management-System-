@@ -68,10 +68,10 @@ hospital-management-system/
    ```
 
 2. **Environment Variables:**
-   Create a `.env` file in the `server` directory:
+   A root `.env` file is already provided. You can configure:
    ```env
    PORT=5000
-   MONGO_URI=mongodb://localhost:27017/hms
+   MONGO_URI=mongodb://127.0.0.1:27017/hms
    JWT_SECRET=your_super_secret_jwt_key
    CLIENT_URL=http://localhost:3000
    NODE_ENV=development
