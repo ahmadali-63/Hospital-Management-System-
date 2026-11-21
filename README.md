@@ -96,12 +96,23 @@ hospital-management-system/
 - `POST /api/auth/register` - Patient Registration
 - `POST /api/auth/login` - User Login
 - `GET /api/doctors` - Search/List Doctors
+- `POST /api/doctors` - Register Doctor (Admin)
 - `POST /api/appointments` - Book Appointment
 - `GET /api/appointments` - View Appointments
+- `PATCH /api/appointments/:id/status` - Update Appointment Status
 - `POST /api/clinical/records` - Add Medical Record (Doctor)
+- `GET /api/clinical/records` - View Medical Records
+- `POST /api/clinical/prescriptions` - Create Prescription (Doctor)
+- `GET /api/clinical/prescriptions` - View Prescriptions
+- `GET /api/beds` - View Hospital Beds Status
 - `POST /api/beds/admissions` - Admit Patient (Admin)
+- `PATCH /api/beds/admissions/:id/discharge` - Discharge Patient (Admin)
 - `POST /api/emergency` - Register Emergency Case (Admin)
+- `GET /api/emergency` - View Emergency Cases
 - `POST /api/billing` - Generate Bill (Admin)
+- `GET /api/billing` - View Bills
+- `POST /api/billing/:id/pay` - Record Payment (Admin)
+- `GET /api/stats` - Live Dashboard Statistics
 
 ## MVP Scope Constraints
 The following features are explicitly **Future Enhancements (Phase 2)** and are not included in this MVP:
@@ -110,4 +121,3 @@ The following features are explicitly **Future Enhancements (Phase 2)** and are 
 - Online Payment Gateways
 - Advanced Real-Time Infrastructure (WebSockets)
 - Email/SMS Notifications
-"# Hospital-Management-System" 
