@@ -133,4 +133,36 @@ export class AuthService {
 
     return { user: userResponse as IUser, token };
   }
+
+  static async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
+    const normalizedEmail = (email || '').toLowerCase().trim();
+    const user = await User.findOne({ email: normalizedEmail });
+    if (!user) {
+      const error: any = new Error('No account found with this email address');
+      error.statusCode = 404;
+      throw error;
+    }
+    return {
+      success: true,
+      message: 'Account verified. You can now choose a new password.',
+    };
+  }
+
+  static async resetPassword(email: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+    const normalizedEmail = (email || '').toLowerCase().trim();
+    const user = await User.findOne({ email: normalizedEmail }).select('+password');
+    if (!user) {
+      const error: any = new Error('No account found with this email address');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    user.password = newPassword; // Will be hashed by pre-save hook
+    await user.save();
+
+    return {
+      success: true,
+      message: 'Password reset successfully. You can now log in with your new password.',
+    };
+  }
 }

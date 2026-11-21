@@ -18,10 +18,23 @@ export async function initSuperAdmin() {
       });
       logger.info(`Super Admin initialized: ${email}`);
     } else {
+      let changed = false;
       if (superAdmin.role !== Role.SUPER_ADMIN) {
         superAdmin.role = Role.SUPER_ADMIN;
+        changed = true;
+      }
+      if (!superAdmin.isActive) {
+        superAdmin.isActive = true;
+        changed = true;
+      }
+      const matches = await superAdmin.comparePassword(password);
+      if (!matches) {
+        superAdmin.password = password; // Will be hashed by User pre-save hook
+        changed = true;
+      }
+      if (changed) {
         await superAdmin.save();
-        logger.info(`Updated existing user ${email} to SUPER_ADMIN role`);
+        logger.info(`Synchronized Super Admin credentials with .env`);
       }
     }
   } catch (error: any) {

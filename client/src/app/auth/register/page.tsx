@@ -252,15 +252,23 @@ function RegisterForm() {
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
                 title={showPassword ? 'Hide password' : 'Show password'}
                 onClick={toggleShowPassword}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 z-20 cursor-pointer rounded-lg p-1.5 transition select-none ${
+                className={`absolute right-2.5 top-1/2 -translate-y-1/2 z-30 cursor-pointer rounded-lg p-2 transition select-none ${
                   showPassword
-                    ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40'
-                    : 'text-slate-400 hover:text-cyan-300 hover:bg-white/[0.06]'
+                    ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40 shadow-sm'
+                    : 'text-slate-300 hover:text-cyan-300 hover:bg-white/[0.1]'
                 }`}
               >
-                {showPassword ? <EyeOff size={19} className="pointer-events-none" /> : <Eye size={19} className="pointer-events-none" />}
+                {showPassword ? <EyeOff size={20} className="pointer-events-none" /> : <Eye size={20} className="pointer-events-none" />}
               </button>
             </div>
+
+            {/* Plain-text display when password visibility is active */}
+            {showPassword && form.password && (
+              <div className="mt-2 flex items-center justify-between rounded-lg border border-cyan-500/30 bg-cyan-950/40 px-3 py-1.5 text-xs text-cyan-200">
+                <span className="font-semibold text-cyan-400">Password preview:</span>
+                <span className="font-mono select-all text-white font-bold">{form.password}</span>
+              </div>
+            )}
           </div>
 
           <label className="text-sm font-medium text-slate-300">
