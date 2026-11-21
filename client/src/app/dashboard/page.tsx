@@ -3,16 +3,31 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Users, UserPlus, Calendar as CalendarIcon, Activity, Bed, Siren, ArrowUpRight } from 'lucide-react';
+import {
+  Users,
+  UserPlus,
+  Calendar as CalendarIcon,
+  Activity,
+  Bed,
+  Siren,
+  ArrowUpRight,
+  ShieldCheck,
+  ClipboardList,
+  FileText,
+  Stethoscope,
+  Sparkles,
+} from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '@/services/api';
 
 interface StatsData {
   totalPatients: number;
   availableDoctors: number;
+  totalDoctors?: number;
   todayAppointments: number;
   availableBeds: number;
   totalBeds: number;
+  totalUsers?: number;
   recentAdmissions: Array<{
     _id: string;
     admissionId: string;
@@ -35,6 +50,7 @@ const mockChartData = [
 export default function DashboardOverview() {
   const router = useRouter();
   const [stats, setStats] = useState<StatsData | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -42,6 +58,7 @@ export default function DashboardOverview() {
     if (stored) {
       try {
         const user = JSON.parse(stored);
+        setCurrentUser(user);
         if (user.role === 'PATIENT') {
           router.replace('/dashboard/patient');
           return;
@@ -68,15 +85,54 @@ export default function DashboardOverview() {
     loadStats();
   }, []);
 
+  const isSuperAdmin = currentUser?.role === 'SUPER_ADMIN';
   const totalPatients = stats ? stats.totalPatients : 100;
   const availableDoctors = stats ? stats.availableDoctors : 10;
+  const totalDoctors = stats?.totalDoctors || 10;
   const todayAppointments = stats ? stats.todayAppointments : 1;
   const availableBeds = stats ? stats.availableBeds : 34;
   const totalBeds = stats ? stats.totalBeds : 35;
+  const totalUsers = stats?.totalUsers || 112;
 
   return (
-    <div className="max-w-7xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-gray-200">
+    <div className="max-w-7xl space-y-6">
+      {/* Super Admin Master Banner */}
+      {isSuperAdmin && (
+        <div className="rounded-2xl border border-amber-400/30 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent p-6 shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/20 px-3 py-1 text-xs font-bold text-amber-800 border border-amber-400/30">
+                <ShieldCheck size={14} className="text-amber-600" />
+                Root Authority & Oversight
+              </div>
+              <h2 className="mt-2 text-xl font-bold text-gray-900 flex items-center gap-2">
+                👑 Super Admin Command Center
+              </h2>
+              <p className="mt-1 text-sm text-gray-600 max-w-2xl">
+                Logged in as <strong className="text-amber-900 font-semibold">{currentUser?.name || 'Super Admin'}</strong> ({currentUser?.email || 'superadmin@hms.com'}).
+                You have master authority to inspect and manage <strong>everybody&apos;s data and operations</strong> across Nexus Care.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Link
+                href="/dashboard/users"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-amber-500 text-slate-950 hover:bg-amber-400 transition shadow-sm"
+              >
+                <Users size={14} /> View All Members ({totalUsers})
+              </Link>
+              <Link
+                href="/dashboard/doctors"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition"
+              >
+                <Stethoscope size={14} /> Doctors Directory
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hospital Overview Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-200">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Hospital Overview</h1>
           <p className="mt-1 text-sm text-gray-500">Live system status and hospital operational metrics.</p>
@@ -103,8 +159,8 @@ export default function DashboardOverview() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Primary 4 Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Link href="/dashboard/patients" className="block group">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center transition group-hover:border-cyan-300 group-hover:shadow-md">
             <div className="p-3 rounded-full bg-blue-50 text-blue-600 mr-4 group-hover:bg-blue-100 transition">
@@ -128,7 +184,7 @@ export default function DashboardOverview() {
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-500">Available Doctors</p>
               <p className="text-2xl font-bold text-gray-900">
-                {isLoading ? '...' : availableDoctors.toLocaleString()}
+                {isLoading ? '...' : `${availableDoctors} / ${totalDoctors}`}
               </p>
             </div>
             <ArrowUpRight className="h-4 w-4 text-gray-300 group-hover:text-cyan-600" />
@@ -166,6 +222,75 @@ export default function DashboardOverview() {
         </Link>
       </div>
 
+      {/* Super Admin Master Access Grid (Everybody's Things & Information) */}
+      {isSuperAdmin && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base font-bold text-gray-900 flex items-center gap-2">
+              <Sparkles size={16} className="text-amber-500" />
+              Full Hospital Operations & Information
+            </h3>
+            <span className="text-xs text-gray-400">Master Directory</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Link
+              href="/dashboard/users"
+              className="p-4 rounded-xl border border-gray-200 bg-white hover:border-amber-400 hover:shadow-md transition text-center group"
+            >
+              <ShieldCheck className="mx-auto text-amber-500 group-hover:scale-110 transition" size={24} />
+              <p className="mt-2 text-xs font-bold text-gray-900">All Members</p>
+              <p className="text-[10px] text-gray-500">Total: {totalUsers}</p>
+            </Link>
+
+            <Link
+              href="/dashboard/doctors"
+              className="p-4 rounded-xl border border-gray-200 bg-white hover:border-emerald-400 hover:shadow-md transition text-center group"
+            >
+              <Stethoscope className="mx-auto text-emerald-500 group-hover:scale-110 transition" size={24} />
+              <p className="mt-2 text-xs font-bold text-gray-900">Doctors</p>
+              <p className="text-[10px] text-gray-500">{totalDoctors} registered</p>
+            </Link>
+
+            <Link
+              href="/dashboard/patients"
+              className="p-4 rounded-xl border border-gray-200 bg-white hover:border-blue-400 hover:shadow-md transition text-center group"
+            >
+              <Users className="mx-auto text-blue-500 group-hover:scale-110 transition" size={24} />
+              <p className="mt-2 text-xs font-bold text-gray-900">Patients</p>
+              <p className="text-[10px] text-gray-500">{totalPatients} records</p>
+            </Link>
+
+            <Link
+              href="/dashboard/clinical"
+              className="p-4 rounded-xl border border-gray-200 bg-white hover:border-purple-400 hover:shadow-md transition text-center group"
+            >
+              <ClipboardList className="mx-auto text-purple-500 group-hover:scale-110 transition" size={24} />
+              <p className="mt-2 text-xs font-bold text-gray-900">Clinical Records</p>
+              <p className="text-[10px] text-gray-500">Consultations</p>
+            </Link>
+
+            <Link
+              href="/dashboard/billing"
+              className="p-4 rounded-xl border border-gray-200 bg-white hover:border-emerald-400 hover:shadow-md transition text-center group"
+            >
+              <FileText className="mx-auto text-emerald-600 group-hover:scale-110 transition" size={24} />
+              <p className="mt-2 text-xs font-bold text-gray-900">Billing & Invoices</p>
+              <p className="text-[10px] text-gray-500">Finances</p>
+            </Link>
+
+            <Link
+              href="/dashboard/emergency"
+              className="p-4 rounded-xl border border-gray-200 bg-white hover:border-rose-400 hover:shadow-md transition text-center group"
+            >
+              <Siren className="mx-auto text-rose-500 group-hover:scale-110 transition" size={24} />
+              <p className="mt-2 text-xs font-bold text-gray-900">Emergency Ward</p>
+              <p className="text-[10px] text-gray-500">Live triage</p>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Charts & Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chart Section */}
         <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -189,7 +314,7 @@ export default function DashboardOverview() {
           </div>
         </div>
 
-        {/* Recent Activity */}
+        {/* Recent Admissions */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-gray-900">Recent Admissions</h2>

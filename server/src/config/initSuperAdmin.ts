@@ -1,43 +1,103 @@
 import User, { Role } from '../models/User';
 import logger from '../utils/logger';
 
-export async function initSuperAdmin() {
+async function syncAccount(
+  name: string,
+  email: string,
+  password: string,
+  role: Role,
+  department?: string
+) {
   try {
-    const email = (process.env.SUPER_ADMIN_EMAIL || 'superadmin@hms.com').toLowerCase().trim();
-    const password = process.env.SUPER_ADMIN_PASSWORD || 'superadmin12345';
-    const name = process.env.SUPER_ADMIN_NAME || 'Super Admin';
+    const normalizedEmail = email.toLowerCase().trim();
+    let user = await User.findOne({ email: normalizedEmail }).select('+password');
 
-    let superAdmin = await User.findOne({ email }).select('+password');
-    if (!superAdmin) {
-      superAdmin = await User.create({
+    if (!user) {
+      await User.create({
         name,
-        email,
+        email: normalizedEmail,
         password,
-        role: Role.SUPER_ADMIN,
+        role,
+        department: department || 'General Medicine',
         isActive: true,
       });
-      logger.info(`Super Admin initialized: ${email}`);
+      logger.info(`Initialized account: ${normalizedEmail} (${role})`);
     } else {
       let changed = false;
-      if (superAdmin.role !== Role.SUPER_ADMIN) {
-        superAdmin.role = Role.SUPER_ADMIN;
+      if (user.role !== role) {
+        user.role = role;
         changed = true;
       }
-      if (!superAdmin.isActive) {
-        superAdmin.isActive = true;
+      if (!user.isActive) {
+        user.isActive = true;
         changed = true;
       }
-      const matches = await superAdmin.comparePassword(password);
+      const matches = await user.comparePassword(password);
       if (!matches) {
-        superAdmin.password = password; // Will be hashed by User pre-save hook
+        user.password = password;
         changed = true;
       }
       if (changed) {
-        await superAdmin.save();
-        logger.info(`Synchronized Super Admin credentials with .env`);
+        await user.save();
+        logger.info(`Updated account credentials: ${normalizedEmail}`);
       }
     }
+  } catch (err: any) {
+    logger.warn(`Failed syncing account ${email}: ${err.message}`);
+  }
+}
+
+export async function initSuperAdmin() {
+  try {
+    // 1. Super Admin from environment
+    const superAdminEmail = (process.env.SUPER_ADMIN_EMAIL || 'superadmin@hms.com').toLowerCase().trim();
+    const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD || 'superadmin12345';
+    const superAdminName = process.env.SUPER_ADMIN_NAME || 'Super Admin';
+
+    await syncAccount(
+      superAdminName,
+      superAdminEmail,
+      superAdminPassword,
+      Role.SUPER_ADMIN,
+      'Administration'
+    );
+
+    // 2. Default Doctor Demo Account
+    await syncAccount(
+      'Dr. Imran Khan',
+      'doctor01@hms.com',
+      'doctor123',
+      Role.DOCTOR,
+      'Cardiology'
+    );
+
+    // 3. Default Patient Demo Account
+    await syncAccount(
+      'Ayesha Khan',
+      'patient001@hms.com',
+      'patient123',
+      Role.PATIENT,
+      'General Medicine'
+    );
+
+    // 4. Default Staff Demo Account
+    await syncAccount(
+      'Ahmad Khan',
+      'ahmad@gmail.com',
+      'ahmad12345',
+      Role.STAFF,
+      'Administration'
+    );
+
+    // 5. Default Admin Demo Account
+    await syncAccount(
+      'Hospital Admin',
+      'admin@hms.com',
+      'admin123',
+      Role.ADMIN,
+      'Administration'
+    );
   } catch (error: any) {
-    logger.error(`Super Admin initialization warning: ${error.message}`);
+    logger.error(`System accounts initialization warning: ${error.message}`);
   }
 }

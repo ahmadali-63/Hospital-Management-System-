@@ -82,6 +82,37 @@ function RegisterForm() {
     setShowPassword((prev) => !prev);
   }
 
+  async function handleDirectLogin(loginEmail: string, loginPass: string) {
+    setMessage('');
+    try {
+      setIsLoading(true);
+      const response = await api.post('/auth/login', {
+        email: loginEmail.trim(),
+        password: loginPass,
+      });
+      const user = response.data?.data?.user;
+      const token = response.data?.data?.token;
+      if (!token || !user) {
+        throw new Error('Login failed.');
+      }
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      if (user.role === 'PATIENT') {
+        router.push('/dashboard/patient');
+      } else if (user.role === 'DOCTOR') {
+        router.push('/dashboard/doctor');
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      const resp = (error as AxiosError<{ message?: string }>).response;
+      setMessage(resp?.data?.message || 'Login failed. Please verify credentials.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
@@ -257,12 +288,14 @@ function RegisterForm() {
               Super Admin credentials are configured in your <code className="text-amber-300 font-mono font-bold">.env</code> file (<span className="text-amber-200 font-semibold">superadmin@hms.com</span>).
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link
-                href="/auth/login?quick=superadmin"
-                className="inline-flex items-center gap-2 rounded-xl bg-amber-400 px-6 py-3 font-bold text-slate-950 hover:bg-amber-300 transition shadow-lg shadow-amber-400/20"
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() => handleDirectLogin('superadmin@hms.com', 'superadmin12345')}
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-400 px-6 py-3 font-bold text-slate-950 hover:bg-amber-300 transition shadow-lg shadow-amber-400/20 cursor-pointer disabled:opacity-60"
               >
-                Log in as Super Admin <ArrowRight size={18} />
-              </Link>
+                {isLoading ? 'Logging in as Super Admin...' : 'Log in as Super Admin'} <ArrowRight size={18} />
+              </button>
               <button
                 type="button"
                 onClick={() => setRole('DOCTOR')}
@@ -423,8 +456,18 @@ function RegisterForm() {
             {/* Role: DOCTOR specific fields */}
             {role === 'DOCTOR' && (
               <>
-                <div className="sm:col-span-2 rounded-xl bg-cyan-400/10 border border-cyan-400/20 p-3 text-xs text-cyan-200">
-                  🩺 <strong>Doctor Onboarding:</strong> Fill in your clinical specialization and medical license to create your practitioner profile.
+                <div className="sm:col-span-2 rounded-xl bg-cyan-400/10 border border-cyan-400/20 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-cyan-200">
+                  <div>
+                    🩺 <strong>Doctor Registration:</strong> Fill in your credentials below to create your clinician account.
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isLoading}
+                    onClick={() => handleDirectLogin('doctor01@hms.com', 'doctor123')}
+                    className="shrink-0 px-3 py-1.5 rounded-lg bg-cyan-400 font-bold text-slate-950 hover:bg-cyan-300 transition cursor-pointer text-xs"
+                  >
+                    1-Click Doctor Login →
+                  </button>
                 </div>
                 <label className="text-sm font-medium text-slate-300">
                   Department

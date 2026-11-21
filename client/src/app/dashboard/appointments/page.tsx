@@ -121,7 +121,7 @@ export default function AppointmentsPage() {
       reason: form.reason || undefined,
     };
 
-    if (currentUser?.role === 'ADMIN' && form.patientId) {
+    if ((currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPER_ADMIN') && form.patientId) {
       payload.patientId = form.patientId;
     }
 
@@ -275,7 +275,7 @@ export default function AppointmentsPage() {
                       <td className="px-5 py-4 text-right whitespace-nowrap">
                         {a.status !== 'Cancelled' && a.status !== 'Completed' && (
                           <div className="flex items-center justify-end gap-1.5">
-                            {(currentUser?.role === 'ADMIN' || currentUser?.role === 'DOCTOR') && (
+                            {(currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPER_ADMIN' || currentUser?.role === 'DOCTOR') && (
                               <button
                                 onClick={() => handleUpdateStatus(a._id, 'Completed')}
                                 title="Mark Completed"
@@ -323,7 +323,7 @@ export default function AppointmentsPage() {
             )}
 
             <form onSubmit={handleBookAppointment} className="space-y-4">
-              {currentUser?.role === 'ADMIN' && (
+              {(currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPER_ADMIN') && (
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 mb-1">Select Patient</label>
                   <select

@@ -138,7 +138,7 @@ export default function DoctorsPage() {
     }
   }
 
-  const isAdmin = currentUser?.role === 'ADMIN';
+  const isAdmin = currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPER_ADMIN';
 
   return (
     <section className="max-w-7xl">

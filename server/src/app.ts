@@ -13,6 +13,7 @@ import emergencyRoutes from './routes/emergency.routes';
 import billingRoutes from './routes/billing.routes';
 import userRoutes from './routes/user.routes';
 import './models/Department';
+import User from './models/User';
 import Patient from './models/Patient';
 import Doctor from './models/Doctor';
 import Appointment from './models/Appointment';
@@ -78,8 +79,27 @@ app.use('/api/users', userRoutes);
 // Dashboard Statistics Overview
 app.get('/api/stats', protect, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const totalPatients = await Patient.countDocuments();
-    const availableDoctors = await Doctor.countDocuments({ status: 'Available', isActive: true });
+    const [
+      totalPatients,
+      availableDoctors,
+      totalDoctors,
+      totalBeds,
+      availableBeds,
+      recentAdmissions,
+      totalUsers,
+    ] = await Promise.all([
+      Patient.countDocuments(),
+      Doctor.countDocuments({ status: 'Available', isActive: true }),
+      Doctor.countDocuments(),
+      Bed.countDocuments(),
+      Bed.countDocuments({ status: 'Available' }),
+      Admission.find()
+        .populate('patient', 'name patientId')
+        .populate('ward', 'name')
+        .sort('-admissionDate')
+        .limit(5),
+      User.countDocuments(),
+    ]);
 
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
@@ -89,24 +109,17 @@ app.get('/api/stats', protect, async (req: Request, res: Response, next: NextFun
       date: { $gte: startOfDay, $lte: endOfDay },
     });
 
-    const totalBeds = await Bed.countDocuments();
-    const availableBeds = await Bed.countDocuments({ status: 'Available' });
-
-    const recentAdmissions = await Admission.find()
-      .populate('patient', 'name patientId')
-      .populate('ward', 'name')
-      .sort('-admissionDate')
-      .limit(5);
-
     res.status(200).json({
       success: true,
       data: {
         totalPatients,
         availableDoctors,
+        totalDoctors,
         todayAppointments,
         availableBeds,
         totalBeds,
         recentAdmissions,
+        totalUsers,
       },
     });
   } catch (error) {

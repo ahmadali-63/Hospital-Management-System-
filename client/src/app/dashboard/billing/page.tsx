@@ -158,7 +158,7 @@ export default function BillingPage() {
     }
   }
 
-  const isAdmin = currentUser?.role === 'ADMIN';
+  const isAdmin = currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPER_ADMIN';
 
   const totalBilled = bills.reduce((acc, b) => acc + (b.totalAmount || 0), 0);
   const totalPaid = bills.reduce((acc, b) => acc + (b.paidAmount || 0), 0);

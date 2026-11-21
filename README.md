@@ -86,12 +86,6 @@ hospital-management-system/
 │   └── package.json
 ├── .env                        (Root Environment Variables)
 └── package.json                (Root Monorepo Workspace)
-```
-
----
-
-```
-
 ---
 
 ## Getting Started

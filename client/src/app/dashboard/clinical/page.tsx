@@ -201,7 +201,7 @@ export default function ClinicalPage() {
     }
   }
 
-  const isDoctor = currentUser?.role === 'DOCTOR' || currentUser?.role === 'ADMIN';
+  const isDoctor = currentUser?.role === 'DOCTOR' || currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPER_ADMIN';
 
   return (
     <section className="max-w-7xl">
