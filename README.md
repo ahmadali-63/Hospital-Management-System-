@@ -183,3 +183,4 @@ npm run dev
   - `POST /api/billing` - Generate bill
   - `GET /api/billing` - View invoices
   - `POST /api/billing/:id/pay` - Record payment
+"# Hospital-Management-System-" 
