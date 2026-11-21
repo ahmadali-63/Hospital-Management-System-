@@ -3,19 +3,56 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
-import { ArrowRight, Eye, EyeOff, HeartPulse } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, HeartPulse, User, Stethoscope, Briefcase } from 'lucide-react';
 import { AxiosError } from 'axios';
 import api from '@/services/api';
 
-const initialForm = { name: '', email: '', password: '', phone: '', dateOfBirth: '', gender: 'Other', bloodGroup: 'O+', address: '', emergencyContact: '' };
+type RegistrationRole = 'PATIENT' | 'DOCTOR' | 'STAFF';
+
+const initialForm = {
+  name: '',
+  email: '',
+  password: '',
+  phone: '',
+  // Patient fields
+  dateOfBirth: '',
+  gender: 'Other',
+  bloodGroup: 'O+',
+  address: '',
+  emergencyContact: '',
+  // Doctor fields
+  specialization: 'General Medicine',
+  department: 'General Medicine',
+  licenseNumber: '',
+  consultationFee: '50',
+  // Staff fields
+  designation: 'Staff Nurse',
+};
+
+const departments = [
+  'General Medicine',
+  'Cardiology',
+  'Neurology',
+  'Pediatrics',
+  'Orthopedics',
+  'Emergency',
+  'Surgery',
+  'Oncology',
+  'Dermatology',
+  'Radiology',
+  'Administration',
+];
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [role, setRole] = useState<RegistrationRole>('PATIENT');
   const [form, setForm] = useState(initialForm);
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const inputClass = 'mt-2 w-full rounded-xl border border-white/15 bg-transparent px-4 py-3 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20';
+
+  const inputClass =
+    'mt-2 w-full rounded-xl border border-white/15 bg-transparent px-4 py-3 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20';
   const selectClass = `${inputClass} [color-scheme:dark] [&>option]:bg-slate-900 [&>option]:text-white`;
 
   function updateField(field: keyof typeof initialForm, value: string) {
@@ -25,15 +62,66 @@ export default function RegisterPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
+
     if (!/^\S+@\S+\.\S+$/.test(form.email)) return setMessage('Enter a valid email address.');
     if (form.password.length < 6) return setMessage('Password must be at least 6 characters.');
-    if (form.phone.trim().length < 10 || form.emergencyContact.trim().length < 10) return setMessage('Phone numbers must contain at least 10 characters.');
+    if (form.phone.trim().length < 10) return setMessage('Phone number must contain at least 10 characters.');
+
+    let payload: Record<string, unknown> = {
+      role,
+      name: form.name.trim(),
+      email: form.email.trim(),
+      password: form.password,
+      phone: form.phone.trim(),
+    };
+
+    if (role === 'PATIENT') {
+      if (!form.dateOfBirth) return setMessage('Please select your date of birth.');
+      if (!form.address.trim()) return setMessage('Please enter your address.');
+      if (form.emergencyContact.trim().length < 10) {
+        return setMessage('Emergency contact phone number must contain at least 10 characters.');
+      }
+      payload = {
+        ...payload,
+        dateOfBirth: form.dateOfBirth,
+        gender: form.gender,
+        bloodGroup: form.bloodGroup,
+        address: form.address.trim(),
+        emergencyContact: form.emergencyContact.trim(),
+      };
+    } else if (role === 'DOCTOR') {
+      if (!form.licenseNumber.trim()) return setMessage('Please enter your medical license number.');
+      if (!form.specialization.trim()) return setMessage('Please specify your specialization.');
+      payload = {
+        ...payload,
+        specialization: form.specialization.trim(),
+        department: form.department,
+        licenseNumber: form.licenseNumber.trim(),
+        consultationFee: Number(form.consultationFee) || 50,
+      };
+    } else if (role === 'STAFF') {
+      if (!form.designation.trim()) return setMessage('Please enter your staff designation.');
+      payload = {
+        ...payload,
+        department: form.department,
+        designation: form.designation.trim(),
+      };
+    }
+
     try {
       setIsLoading(true);
-      const response = await api.post('/auth/register', form);
+      const response = await api.post('/auth/register', payload);
+      const user = response.data.data.user;
       localStorage.setItem('token', response.data.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.data.user));
-      router.push('/dashboard');
+      localStorage.setItem('user', JSON.stringify(user));
+
+      if (user.role === 'PATIENT') {
+        router.push('/dashboard/patient');
+      } else if (user.role === 'DOCTOR') {
+        router.push('/dashboard/doctor');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error) {
       const response = (error as AxiosError<{ message?: string; errors?: Array<{ message?: string }> }>).response;
       const validationError = response?.data?.errors?.[0]?.message;
@@ -48,22 +136,273 @@ export default function RegisterPage() {
       <div className="neon-orb absolute -left-24 top-12 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl" />
       <div className="neon-orb absolute -right-20 bottom-10 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
       <section className="neon-rise relative w-full max-w-3xl rounded-3xl border border-white/20 bg-white/[0.08] p-7 shadow-[0_0_70px_rgba(34,211,238,0.16),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:p-10">
-        <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-[0.2em] text-cyan-300"><HeartPulse size={20} /> NEXUS CARE</Link>
-        <div className="mt-8"><p className="text-sm font-medium text-fuchsia-300">Patient onboarding</p><h1 className="mt-2 text-4xl font-bold tracking-tight">Create your care profile.</h1><p className="mt-3 text-sm leading-6 text-slate-400">Your account and patient record will be stored securely in MongoDB.</p></div>
+        <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-[0.2em] text-cyan-300">
+          <HeartPulse size={20} /> NEXUS CARE
+        </Link>
+        <div className="mt-8">
+          <p className="text-sm font-medium text-fuchsia-300">Registration & Onboarding</p>
+          <h1 className="mt-2 text-4xl font-bold tracking-tight">Create your account.</h1>
+          <p className="mt-3 text-sm leading-6 text-slate-400">
+            Select your role to get access to your personalized portal.
+          </p>
+        </div>
+
+        {/* Role Selector Tabs */}
+        <div className="mt-6 flex rounded-2xl bg-white/[0.05] p-1.5 border border-white/10">
+          <button
+            type="button"
+            onClick={() => { setRole('PATIENT'); setMessage(''); }}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition ${
+              role === 'PATIENT'
+                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20'
+                : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
+            }`}
+          >
+            <User size={16} /> Patient
+          </button>
+          <button
+            type="button"
+            onClick={() => { setRole('DOCTOR'); setMessage(''); }}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition ${
+              role === 'DOCTOR'
+                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20'
+                : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
+            }`}
+          >
+            <Stethoscope size={16} /> Doctor
+          </button>
+          <button
+            type="button"
+            onClick={() => { setRole('STAFF'); setMessage(''); }}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition ${
+              role === 'STAFF'
+                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20'
+                : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
+            }`}
+          >
+            <Briefcase size={16} /> Staff
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
-          <label className="text-sm font-medium text-slate-300">Full name<input value={form.name} onChange={(event) => updateField('name', event.target.value)} className={inputClass} placeholder="Enter your full name" required /></label>
-          <label className="text-sm font-medium text-slate-300">Email address<input type="email" autoComplete="email" value={form.email} onChange={(event) => updateField('email', event.target.value)} className={inputClass} placeholder="Enter your email" required /></label>
-          <label className="text-sm font-medium text-slate-300">Password<span className="relative mt-2 block"><input type={showPassword ? 'text' : 'password'} autoComplete="new-password" value={form.password} onChange={(event) => updateField('password', event.target.value)} className={`${inputClass} pr-12`} placeholder="At least 6 characters" required /><button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:text-cyan-300">{showPassword ? <EyeOff size={19} /> : <Eye size={19} />}</button></span></label>
-          <label className="text-sm font-medium text-slate-300">Phone<input type="tel" value={form.phone} onChange={(event) => updateField('phone', event.target.value)} className={inputClass} placeholder="Enter phone number" required /></label>
-          <label className="text-sm font-medium text-slate-300">Date of birth<input type="date" value={form.dateOfBirth} onChange={(event) => updateField('dateOfBirth', event.target.value)} className={inputClass} required /></label>
-          <label className="text-sm font-medium text-slate-300">Gender<select value={form.gender} onChange={(event) => updateField('gender', event.target.value)} className={selectClass}><option>Male</option><option>Female</option><option>Other</option></select></label>
-          <label className="text-sm font-medium text-slate-300">Blood group<select value={form.bloodGroup} onChange={(event) => updateField('bloodGroup', event.target.value)} className={selectClass}>{['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((group) => <option key={group}>{group}</option>)}</select></label>
-          <label className="text-sm font-medium text-slate-300">Emergency contact<input value={form.emergencyContact} onChange={(event) => updateField('emergencyContact', event.target.value)} className={inputClass} placeholder="Enter emergency contact" required /></label>
-          <label className="text-sm font-medium text-slate-300 sm:col-span-2">Address<textarea value={form.address} onChange={(event) => updateField('address', event.target.value)} className={`${inputClass} min-h-24 resize-y`} placeholder="Enter your address" required /></label>
-          {message && <p role="alert" className="sm:col-span-2 rounded-lg border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-200">{message}</p>}
-          <button disabled={isLoading} className="flex items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 font-bold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2">{isLoading ? 'Creating profile...' : 'Create patient account'} {!isLoading && <ArrowRight size={18} />}</button>
+          {/* Common Fields */}
+          <label className="text-sm font-medium text-slate-300">
+            Full name
+            <input
+              value={form.name}
+              onChange={(event) => updateField('name', event.target.value)}
+              className={inputClass}
+              placeholder={role === 'DOCTOR' ? 'Dr. John Doe' : 'Enter full name'}
+              required
+            />
+          </label>
+          <label className="text-sm font-medium text-slate-300">
+            Email address
+            <input
+              type="email"
+              autoComplete="email"
+              value={form.email}
+              onChange={(event) => updateField('email', event.target.value)}
+              className={inputClass}
+              placeholder="name@example.com"
+              required
+            />
+          </label>
+          <label className="text-sm font-medium text-slate-300">
+            Password
+            <span className="relative mt-2 block">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="new-password"
+                value={form.password}
+                onChange={(event) => updateField('password', event.target.value)}
+                className={`${inputClass} pr-12`}
+                placeholder="At least 6 characters"
+                required
+              />
+              <button
+                type="button"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:text-cyan-300"
+              >
+                {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+              </button>
+            </span>
+          </label>
+          <label className="text-sm font-medium text-slate-300">
+            Phone number
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={(event) => updateField('phone', event.target.value)}
+              className={inputClass}
+              placeholder="+1 (555) 000-0000"
+              required
+            />
+          </label>
+
+          {/* Role: PATIENT specific fields */}
+          {role === 'PATIENT' && (
+            <>
+              <label className="text-sm font-medium text-slate-300">
+                Date of birth
+                <input
+                  type="date"
+                  value={form.dateOfBirth}
+                  onChange={(event) => updateField('dateOfBirth', event.target.value)}
+                  className={inputClass}
+                  required
+                />
+              </label>
+              <label className="text-sm font-medium text-slate-300">
+                Gender
+                <select
+                  value={form.gender}
+                  onChange={(event) => updateField('gender', event.target.value)}
+                  className={selectClass}
+                >
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <label className="text-sm font-medium text-slate-300">
+                Blood group
+                <select
+                  value={form.bloodGroup}
+                  onChange={(event) => updateField('bloodGroup', event.target.value)}
+                  className={selectClass}
+                >
+                  {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((group) => (
+                    <option key={group}>{group}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-sm font-medium text-slate-300">
+                Emergency contact
+                <input
+                  value={form.emergencyContact}
+                  onChange={(event) => updateField('emergencyContact', event.target.value)}
+                  className={inputClass}
+                  placeholder="Emergency phone or contact"
+                  required
+                />
+              </label>
+              <label className="text-sm font-medium text-slate-300 sm:col-span-2">
+                Residential address
+                <textarea
+                  value={form.address}
+                  onChange={(event) => updateField('address', event.target.value)}
+                  className={`${inputClass} min-h-20 resize-y`}
+                  placeholder="Street, City, Postal Code"
+                  required
+                />
+              </label>
+            </>
+          )}
+
+          {/* Role: DOCTOR specific fields */}
+          {role === 'DOCTOR' && (
+            <>
+              <label className="text-sm font-medium text-slate-300">
+                Department
+                <select
+                  value={form.department}
+                  onChange={(event) => updateField('department', event.target.value)}
+                  className={selectClass}
+                >
+                  {departments.map((dept) => (
+                    <option key={dept}>{dept}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-sm font-medium text-slate-300">
+                Specialization
+                <input
+                  value={form.specialization}
+                  onChange={(event) => updateField('specialization', event.target.value)}
+                  className={inputClass}
+                  placeholder="e.g. Cardiologist, Neurologist"
+                  required
+                />
+              </label>
+              <label className="text-sm font-medium text-slate-300">
+                Medical License Number
+                <input
+                  value={form.licenseNumber}
+                  onChange={(event) => updateField('licenseNumber', event.target.value)}
+                  className={inputClass}
+                  placeholder="e.g. MD-123456"
+                  required
+                />
+              </label>
+              <label className="text-sm font-medium text-slate-300">
+                Consultation Fee ($)
+                <input
+                  type="number"
+                  min="0"
+                  step="5"
+                  value={form.consultationFee}
+                  onChange={(event) => updateField('consultationFee', event.target.value)}
+                  className={inputClass}
+                  placeholder="50"
+                  required
+                />
+              </label>
+            </>
+          )}
+
+          {/* Role: STAFF specific fields */}
+          {role === 'STAFF' && (
+            <>
+              <label className="text-sm font-medium text-slate-300">
+                Department
+                <select
+                  value={form.department}
+                  onChange={(event) => updateField('department', event.target.value)}
+                  className={selectClass}
+                >
+                  {departments.map((dept) => (
+                    <option key={dept}>{dept}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-sm font-medium text-slate-300">
+                Designation / Job Title
+                <input
+                  value={form.designation}
+                  onChange={(event) => updateField('designation', event.target.value)}
+                  className={inputClass}
+                  placeholder="e.g. Nurse Coordinator, Receptionist"
+                  required
+                />
+              </label>
+            </>
+          )}
+
+          {message && (
+            <p role="alert" className="sm:col-span-2 rounded-lg border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-200">
+              {message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="flex items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 font-bold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
+          >
+            {isLoading ? 'Creating account...' : `Create ${role.toLowerCase()} account`}{' '}
+            {!isLoading && <ArrowRight size={18} />}
+          </button>
         </form>
-        <p className="mt-7 text-center text-sm text-slate-400">Already registered? <Link href="/auth/login" className="font-semibold text-cyan-300 hover:text-cyan-200">Sign in</Link></p>
+
+        <p className="mt-7 text-center text-sm text-slate-400">
+          Already registered?{' '}
+          <Link href="/auth/login" className="font-semibold text-cyan-300 hover:text-cyan-200">
+            Sign in
+          </Link>
+        </p>
       </section>
     </main>
   );

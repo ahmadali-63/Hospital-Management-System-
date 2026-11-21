@@ -24,9 +24,17 @@ export default function LoginPage() {
     try {
       setIsLoading(true);
       const response = await api.post('/auth/login', { email: email.trim(), password });
+      const user = response.data.data.user;
       localStorage.setItem('token', response.data.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.data.user));
-      router.push('/dashboard');
+      localStorage.setItem('user', JSON.stringify(user));
+
+      if (user.role === 'PATIENT') {
+        router.push('/dashboard/patient');
+      } else if (user.role === 'DOCTOR') {
+        router.push('/dashboard/doctor');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error) {
       const response = (error as AxiosError<{ message?: string }>).response;
       setMessage(response?.data?.message || 'Unable to sign in. Check that the API and MongoDB are running.');

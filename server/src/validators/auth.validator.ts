@@ -7,16 +7,31 @@ export const loginSchema = z.object({
   }),
 });
 
-export const registerPatientSchema = z.object({
+export const registerSchema = z.object({
   body: z.object({
+    role: z.enum(['PATIENT', 'DOCTOR', 'STAFF']).optional().default('PATIENT'),
     name: z.string().min(2, 'Name is required'),
     email: z.string().email('Invalid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
-    phone: z.string().min(10, 'Phone number must be at least 10 characters'),
-    dateOfBirth: z.string().refine((date) => !isNaN(Date.parse(date)), { message: 'Invalid date format' }),
-    gender: z.enum(['Male', 'Female', 'Other']),
-    bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
-    address: z.string().min(5, 'Address is required'),
-    emergencyContact: z.string().min(10, 'Emergency contact is required'),
+    phone: z.string().optional(),
+
+    // Patient specific fields
+    dateOfBirth: z.string().optional(),
+    gender: z.enum(['Male', 'Female', 'Other']).optional(),
+    bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).optional(),
+    address: z.string().optional(),
+    emergencyContact: z.string().optional(),
+
+    // Doctor specific fields
+    specialization: z.string().optional(),
+    department: z.string().optional(),
+    qualification: z.string().optional(),
+    experience: z.number().optional(),
+    consultationFee: z.number().optional(),
+
+    // Staff specific fields
+    designation: z.string().optional(),
   }),
 });
+
+export const registerPatientSchema = registerSchema;

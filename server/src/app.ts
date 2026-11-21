@@ -11,6 +11,7 @@ import clinicalRoutes from './routes/clinical.routes';
 import bedRoutes from './routes/bed.routes';
 import emergencyRoutes from './routes/emergency.routes';
 import billingRoutes from './routes/billing.routes';
+import userRoutes from './routes/user.routes';
 import './models/Department';
 import Patient from './models/Patient';
 import Doctor from './models/Doctor';
@@ -23,7 +24,16 @@ const app: Application = express();
 
 // Security Middleware
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000' }));
+app.use(cors({
+  origin: [
+    process.env.CLIENT_URL || 'http://localhost:3000',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3001'
+  ],
+  credentials: true
+}));
 app.use(compression());
 
 // Rate Limiting
@@ -47,6 +57,7 @@ app.use('/api/clinical', clinicalRoutes);
 app.use('/api/beds', bedRoutes);
 app.use('/api/emergency', emergencyRoutes);
 app.use('/api/billing', billingRoutes);
+app.use('/api/users', userRoutes);
 
 // Dashboard Statistics Overview
 app.get('/api/stats', protect, async (req: Request, res: Response, next: NextFunction) => {

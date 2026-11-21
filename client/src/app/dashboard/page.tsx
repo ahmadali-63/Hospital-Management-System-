@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Users, UserPlus, Calendar as CalendarIcon, Activity, Bed, Siren, ArrowUpRight } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '@/services/api';
@@ -32,8 +33,26 @@ const mockChartData = [
 ];
 
 export default function DashboardOverview() {
+  const router = useRouter();
   const [stats, setStats] = useState<StatsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('user');
+    if (stored) {
+      try {
+        const user = JSON.parse(stored);
+        if (user.role === 'PATIENT') {
+          router.replace('/dashboard/patient');
+          return;
+        }
+        if (user.role === 'DOCTOR') {
+          router.replace('/dashboard/doctor');
+          return;
+        }
+      } catch {}
+    }
+  }, [router]);
 
   useEffect(() => {
     async function loadStats() {

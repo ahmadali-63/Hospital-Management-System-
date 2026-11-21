@@ -9,8 +9,8 @@ const router = Router();
 
 router.use(protect);
 
-router.post('/', authorize(Role.ADMIN), validate(generateBillSchema), BillingController.generateBill);
+router.post('/', authorize(Role.ADMIN, Role.STAFF), validate(generateBillSchema), BillingController.generateBill);
 router.get('/', BillingController.getBills); // Patients can see their own, Admins can see all
-router.post('/:id/pay', authorize(Role.ADMIN), validate(recordPaymentSchema), BillingController.recordPayment);
+router.post('/:id/pay', authorize(Role.ADMIN, Role.STAFF), validate(recordPaymentSchema), BillingController.recordPayment);
 
 export default router;

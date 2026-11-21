@@ -15,8 +15,8 @@ router.get('/', BedController.getBeds);
 router.get('/wards', BedController.getWards);
 router.get('/admissions', BedController.getAdmissions);
 
-// Only ADMIN can manage admissions and discharges
-router.post('/admissions', authorize(Role.ADMIN), validate(admitPatientSchema), BedController.admitPatient);
-router.patch('/admissions/:id/discharge', authorize(Role.ADMIN), BedController.dischargePatient);
+// Only ADMIN and STAFF can manage admissions and discharges
+router.post('/admissions', authorize(Role.ADMIN, Role.STAFF), validate(admitPatientSchema), BedController.admitPatient);
+router.patch('/admissions/:id/discharge', authorize(Role.ADMIN, Role.STAFF), BedController.dischargePatient);
 
 export default router;

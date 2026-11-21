@@ -2,8 +2,10 @@ import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export enum Role {
+  SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
   DOCTOR = 'DOCTOR',
+  STAFF = 'STAFF',
   PATIENT = 'PATIENT',
 }
 
@@ -12,6 +14,8 @@ export interface IUser extends Document {
   email: string;
   password?: string;
   role: Role;
+  phone?: string;
+  designation?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -24,6 +28,8 @@ const UserSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, select: false }, // Explicitly exclude password by default
     role: { type: String, enum: Object.values(Role), required: true },
+    phone: { type: String },
+    designation: { type: String },
     isActive: { type: Boolean, default: true },
   },
   {

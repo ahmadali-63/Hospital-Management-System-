@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import User from '../models/User';
+import User, { Role } from '../models/User';
 import { getJwtSecret } from '../config/auth';
 
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
@@ -37,7 +37,8 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
 export const authorize = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = (req as any).user;
-    if (!user || !roles.includes(user.role)) {
+    // SUPER_ADMIN has full access to all protected routes
+    if (!user || (!roles.includes(user.role) && user.role !== Role.SUPER_ADMIN)) {
       return res.status(403).json({
         success: false,
         message: `User role ${user?.role || 'Unknown'} is not authorized to access this route`,

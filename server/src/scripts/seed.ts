@@ -57,6 +57,15 @@ const importData = async () => {
   try {
     await connectDB();
 
+    // Super Admin from .env
+    const superAdmin = await upsertUser(
+      process.env.SUPER_ADMIN_NAME || 'Super Admin',
+      process.env.SUPER_ADMIN_EMAIL || 'superadmin@hms.com',
+      process.env.SUPER_ADMIN_PASSWORD || 'superadmin12345',
+      Role.SUPER_ADMIN
+    );
+    console.log(`Super Admin ready: ${superAdmin.email} / ${process.env.SUPER_ADMIN_PASSWORD || 'superadmin12345'}`);
+
     // Primary Admin from README
     const admin = await upsertUser('Hospital Admin', 'admin@hms.com', 'admin123', Role.ADMIN);
     // Secondary Admin

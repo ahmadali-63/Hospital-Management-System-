@@ -14,6 +14,7 @@ import {
   ClipboardList,
   Stethoscope,
   HeartPulse,
+  ShieldCheck,
 } from 'lucide-react';
 
 interface UserInfo {
@@ -46,7 +47,10 @@ export default function Sidebar() {
     router.replace('/auth/login');
   }
 
-  const navItems = [
+  const role = user?.role || '';
+
+  // Dynamic Navigation based on Role
+  let navItems = [
     { label: 'Dashboard', href: '/dashboard', icon: Activity },
     { label: 'Patients', href: '/dashboard/patients', icon: Users },
     { label: 'Doctors', href: '/dashboard/doctors', icon: Stethoscope },
@@ -57,16 +61,69 @@ export default function Sidebar() {
     { label: 'Billing', href: '/dashboard/billing', icon: FileText },
   ];
 
+  if (role === 'SUPER_ADMIN' || role === 'ADMIN') {
+    navItems = [
+      { label: 'Dashboard', href: '/dashboard', icon: Activity },
+      { label: 'All Members', href: '/dashboard/users', icon: ShieldCheck },
+      { label: 'Patients', href: '/dashboard/patients', icon: Users },
+      { label: 'Doctors', href: '/dashboard/doctors', icon: Stethoscope },
+      { label: 'Appointments', href: '/dashboard/appointments', icon: Calendar },
+      { label: 'Clinical Workflows', href: '/dashboard/clinical', icon: ClipboardList },
+      { label: 'Bed Management', href: '/dashboard/beds', icon: Bed },
+      { label: 'Emergency Ward', href: '/dashboard/emergency', icon: Siren },
+      { label: 'Billing', href: '/dashboard/billing', icon: FileText },
+    ];
+  } else if (role === 'DOCTOR') {
+    navItems = [
+      { label: 'Doctor Portal', href: '/dashboard/doctor', icon: Activity },
+      { label: 'Appointments', href: '/dashboard/appointments', icon: Calendar },
+      { label: 'Patients Directory', href: '/dashboard/patients', icon: Users },
+      { label: 'Clinical Workflows', href: '/dashboard/clinical', icon: ClipboardList },
+      { label: 'Emergency Ward', href: '/dashboard/emergency', icon: Siren },
+    ];
+  } else if (role === 'PATIENT') {
+    navItems = [
+      { label: 'Patient Portal', href: '/dashboard/patient', icon: Activity },
+      { label: 'Appointments', href: '/dashboard/appointments', icon: Calendar },
+      { label: 'Medical Records', href: '/dashboard/clinical', icon: ClipboardList },
+      { label: 'Billing & Invoices', href: '/dashboard/billing', icon: FileText },
+    ];
+  } else if (role === 'STAFF') {
+    navItems = [
+      { label: 'Dashboard', href: '/dashboard', icon: Activity },
+      { label: 'Patients', href: '/dashboard/patients', icon: Users },
+      { label: 'Doctors', href: '/dashboard/doctors', icon: Stethoscope },
+      { label: 'Appointments', href: '/dashboard/appointments', icon: Calendar },
+      { label: 'Bed Management', href: '/dashboard/beds', icon: Bed },
+      { label: 'Emergency Ward', href: '/dashboard/emergency', icon: Siren },
+      { label: 'Billing', href: '/dashboard/billing', icon: FileText },
+    ];
+  }
+
+  const homeHref =
+    role === 'PATIENT' ? '/dashboard/patient' : role === 'DOCTOR' ? '/dashboard/doctor' : '/dashboard';
+
+  const roleBadgeColor =
+    role === 'SUPER_ADMIN'
+      ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+      : role === 'ADMIN'
+      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+      : role === 'DOCTOR'
+      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+      : role === 'STAFF'
+      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+      : 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
+
   return (
     <div className="flex flex-col w-64 h-screen bg-slate-900 text-gray-100 flex-shrink-0">
       <div className="flex items-center justify-between h-16 px-4 border-b border-slate-800">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href={homeHref} className="flex items-center gap-2">
           <HeartPulse className="h-6 w-6 text-cyan-400" />
           <span className="text-lg font-bold tracking-wide text-white">Nexus Care</span>
         </Link>
         {user?.role && (
-          <span className="text-xs uppercase px-2 py-0.5 rounded-full font-semibold bg-cyan-500/20 text-cyan-300">
-            {user.role}
+          <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold ${roleBadgeColor}`}>
+            {user.role.replace('_', ' ')}
           </span>
         )}
       </div>
@@ -75,7 +132,10 @@ export default function Sidebar() {
         <nav className="flex-1 px-3 py-4 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+            const isExact = pathname === item.href;
+            const isSub = item.href !== '/dashboard' && pathname.startsWith(item.href);
+            const isActive = isExact || isSub;
+
             return (
               <Link
                 key={item.href}

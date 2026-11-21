@@ -9,7 +9,7 @@ const router = Router();
 
 router.use(protect);
 
-router.post('/', authorize(Role.ADMIN), validate(registerEmergencySchema), EmergencyController.registerEmergency);
-router.get('/', authorize(Role.ADMIN, Role.DOCTOR), EmergencyController.getEmergencyCases);
+router.post('/', authorize(Role.ADMIN, Role.STAFF), validate(registerEmergencySchema), EmergencyController.registerEmergency);
+router.get('/', authorize(Role.ADMIN, Role.DOCTOR, Role.STAFF), EmergencyController.getEmergencyCases);
 
 export default router;
