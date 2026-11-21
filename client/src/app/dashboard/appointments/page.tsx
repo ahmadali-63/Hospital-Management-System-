@@ -85,7 +85,7 @@ export default function AppointmentsPage() {
       }).catch(() => {});
     } catch (requestError) {
       const response = (requestError as AxiosError<{ message?: string }>).response;
-      setError(response?.data?.message || 'Unable to load appointments. Sign in first.');
+      setError(response?.data?.message || 'Unable to load appointments. Log in first.');
     } finally {
       setIsLoading(false);
     }

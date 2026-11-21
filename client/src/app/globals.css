@@ -125,6 +125,12 @@
   html {
     @apply font-sans;
   }
+
+  /* Disable native browser password reveal eye buttons that conflict with custom eye icons on Windows/Edge/Chrome */
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none !important;
+  }
 }
 
 @keyframes neon-pulse {

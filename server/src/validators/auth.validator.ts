@@ -28,6 +28,7 @@ export const registerSchema = z.object({
     qualification: z.string().optional(),
     experience: z.number().optional(),
     consultationFee: z.number().optional(),
+    licenseNumber: z.string().optional(),
 
     // Staff specific fields
     designation: z.string().optional(),

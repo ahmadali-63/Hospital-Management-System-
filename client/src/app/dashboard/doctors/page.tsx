@@ -67,7 +67,7 @@ export default function DoctorsPage() {
       setDepartments(deptRes.data.data.departments || []);
     } catch (requestError) {
       const response = (requestError as AxiosError<{ message?: string }>).response;
-      setError(response?.data?.message || 'Unable to load doctors. Sign in first.');
+      setError(response?.data?.message || 'Unable to load doctors. Log in first.');
     } finally {
       setIsLoading(false);
     }

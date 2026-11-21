@@ -6,6 +6,7 @@ export interface IDoctor extends Document {
   name: string;
   specialization: string;
   department: mongoose.Types.ObjectId;
+  licenseNumber?: string;
   qualification: string;
   experience: number;
   consultationFee: number;
@@ -24,6 +25,7 @@ const DoctorSchema: Schema = new Schema(
     name: { type: String, required: true },
     specialization: { type: String, required: true },
     department: { type: Schema.Types.ObjectId, ref: 'Department', required: true },
+    licenseNumber: { type: String },
     qualification: { type: String, required: true },
     experience: { type: Number, required: true },
     consultationFee: { type: Number, required: true },

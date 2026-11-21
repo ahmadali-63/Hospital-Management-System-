@@ -1,8 +1,8 @@
 'use client';
 
+import { Suspense, useEffect, useState, FormEvent } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowRight, Eye, EyeOff, HeartPulse, User, Stethoscope, Briefcase } from 'lucide-react';
 import { AxiosError } from 'axios';
 import api from '@/services/api';
@@ -43,13 +43,22 @@ const departments = [
   'Administration',
 ];
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [role, setRole] = useState<RegistrationRole>('PATIENT');
   const [form, setForm] = useState(initialForm);
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Sync role with query param ?role=doctor etc.
+  useEffect(() => {
+    const qRole = searchParams.get('role')?.toUpperCase();
+    if (qRole === 'DOCTOR') setRole('DOCTOR');
+    else if (qRole === 'STAFF') setRole('STAFF');
+    else if (qRole === 'PATIENT') setRole('PATIENT');
+  }, [searchParams]);
 
   const inputClass =
     'mt-2 w-full rounded-xl border border-white/15 bg-transparent px-4 py-3 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20';
@@ -57,6 +66,10 @@ export default function RegisterPage() {
 
   function updateField(field: keyof typeof initialForm, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  function toggleShowPassword() {
+    setShowPassword((prev) => !prev);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -152,9 +165,9 @@ export default function RegisterPage() {
           <button
             type="button"
             onClick={() => { setRole('PATIENT'); setMessage(''); }}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition cursor-pointer ${
               role === 'PATIENT'
-                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20'
+                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20 font-bold'
                 : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
             }`}
           >
@@ -163,9 +176,9 @@ export default function RegisterPage() {
           <button
             type="button"
             onClick={() => { setRole('DOCTOR'); setMessage(''); }}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition cursor-pointer ${
               role === 'DOCTOR'
-                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20'
+                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20 font-bold'
                 : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
             }`}
           >
@@ -174,9 +187,9 @@ export default function RegisterPage() {
           <button
             type="button"
             onClick={() => { setRole('STAFF'); setMessage(''); }}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition cursor-pointer ${
               role === 'STAFF'
-                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20'
+                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20 font-bold'
                 : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
             }`}
           >
@@ -208,28 +221,48 @@ export default function RegisterPage() {
               required
             />
           </label>
-          <label className="text-sm font-medium text-slate-300">
-            Password
-            <span className="relative mt-2 block">
+
+          {/* Password with Dual Toggle */}
+          <div>
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-medium text-slate-300" htmlFor="reg-password">
+                Password
+              </label>
+              <button
+                type="button"
+                onClick={toggleShowPassword}
+                className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition cursor-pointer select-none"
+              >
+                {showPassword ? 'Hide password' : 'Show password'}
+              </button>
+            </div>
+            <div className="relative mt-2">
               <input
+                id="reg-password"
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 value={form.password}
                 onChange={(event) => updateField('password', event.target.value)}
-                className={`${inputClass} pr-12`}
+                className="w-full rounded-xl border border-white/15 bg-transparent px-4 py-3 pr-12 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20"
                 placeholder="At least 6 characters"
                 required
               />
               <button
                 type="button"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:text-cyan-300"
+                title={showPassword ? 'Hide password' : 'Show password'}
+                onClick={toggleShowPassword}
+                className={`absolute right-3 top-1/2 -translate-y-1/2 z-20 cursor-pointer rounded-lg p-1.5 transition select-none ${
+                  showPassword
+                    ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40'
+                    : 'text-slate-400 hover:text-cyan-300 hover:bg-white/[0.06]'
+                }`}
               >
-                {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                {showPassword ? <EyeOff size={19} className="pointer-events-none" /> : <Eye size={19} className="pointer-events-none" />}
               </button>
-            </span>
-          </label>
+            </div>
+          </div>
+
           <label className="text-sm font-medium text-slate-300">
             Phone number
             <input
@@ -390,7 +423,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="flex items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 font-bold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
+            className="flex items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 font-bold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 cursor-pointer"
           >
             {isLoading ? 'Creating account...' : `Create ${role.toLowerCase()} account`}{' '}
             {!isLoading && <ArrowRight size={18} />}
@@ -400,10 +433,24 @@ export default function RegisterPage() {
         <p className="mt-7 text-center text-sm text-slate-400">
           Already registered?{' '}
           <Link href="/auth/login" className="font-semibold text-cyan-300 hover:text-cyan-200">
-            Sign in
+            Log in
           </Link>
         </p>
       </section>
     </main>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="neon-page neon-grid relative flex min-h-screen items-center justify-center text-white">
+          <div className="text-cyan-300 font-bold">Loading...</div>
+        </main>
+      }
+    >
+      <RegisterForm />
+    </Suspense>
   );
 }

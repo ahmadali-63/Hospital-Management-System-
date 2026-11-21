@@ -15,6 +15,7 @@ export interface IUser extends Document {
   password?: string;
   role: Role;
   phone?: string;
+  department?: string;
   designation?: string;
   isActive: boolean;
   createdAt: Date;
@@ -29,6 +30,7 @@ const UserSchema: Schema = new Schema(
     password: { type: String, required: true, select: false }, // Explicitly exclude password by default
     role: { type: String, enum: Object.values(Role), required: true },
     phone: { type: String },
+    department: { type: String },
     designation: { type: String },
     isActive: { type: Boolean, default: true },
   },

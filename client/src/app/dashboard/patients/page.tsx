@@ -31,7 +31,7 @@ export default function PatientsPage() {
         setPatients(response.data.data.patients);
       } catch (requestError) {
         const response = (requestError as AxiosError<{ message?: string }>).response;
-        setError(response?.data?.message || 'Unable to load patients. Sign in with an admin account first.');
+        setError(response?.data?.message || 'Unable to load patients. Log in with an admin account first.');
       } finally {
         setIsLoading(false);
       }

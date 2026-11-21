@@ -78,7 +78,7 @@ export default function BillingPage() {
       }).catch(() => {});
     } catch (requestError) {
       const response = (requestError as AxiosError<{ message?: string }>).response;
-      setError(response?.data?.message || 'Unable to load bills. Sign in first.');
+      setError(response?.data?.message || 'Unable to load bills. Log in first.');
     } finally {
       setIsLoading(false);
     }
