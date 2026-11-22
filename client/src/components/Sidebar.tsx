@@ -119,10 +119,10 @@ export default function Sidebar() {
       <div className="flex items-center justify-between h-16 px-4 border-b border-slate-800">
         <Link href={homeHref} className="flex items-center gap-2">
           <HeartPulse className="h-6 w-6 text-cyan-400" />
-          <span className="text-lg font-bold tracking-wide text-white">Nexus Care</span>
+          <span className="text-lg font-bold tracking-wide text-white">CareNova</span>
         </Link>
         {user?.role && (
-          <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold ${roleBadgeColor}`}>
+          <span className={`text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold ${roleBadgeColor}`}>
             {user.role.replace('_', ' ')}
           </span>
         )}

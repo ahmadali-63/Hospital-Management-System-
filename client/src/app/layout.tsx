@@ -3,8 +3,8 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "Hospital Management System",
-  description: "Professional Hospital Management System MVP",
+  title: "CareNova - Hospital Management",
+  description: "CareNova hospital management system",
 };
 
 export default function RootLayout({

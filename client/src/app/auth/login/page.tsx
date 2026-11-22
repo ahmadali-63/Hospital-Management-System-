@@ -192,7 +192,7 @@ function LoginForm() {
 
       <section className="neon-rise relative w-full max-w-md rounded-3xl border border-white/20 bg-white/[0.08] p-8 shadow-[0_0_70px_rgba(34,211,238,0.16),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:p-10 z-10">
         <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-[0.2em] text-cyan-300">
-          <HeartPulse size={20} /> NEXUS CARE
+          <HeartPulse size={20} /> CARENOVA
         </Link>
 
         {/* Normal Login View */}
@@ -355,7 +355,7 @@ function LoginForm() {
             </div>
 
             <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-5 text-sm">
-              <span className="text-slate-400">New to Nexus Care?</span>
+              <span className="text-slate-400">New to CareNova?</span>
               <Link
                 href="/auth/register"
                 className="rounded-lg border border-fuchsia-300/50 bg-fuchsia-300/10 px-4 py-2 font-semibold text-fuchsia-200 transition hover:border-fuchsia-200 hover:bg-fuchsia-300/20"

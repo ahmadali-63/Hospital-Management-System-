@@ -110,7 +110,7 @@ export default function DashboardOverview() {
               </h2>
               <p className="mt-1 text-sm text-gray-600 max-w-2xl">
                 Logged in as <strong className="text-amber-900 font-semibold">{currentUser?.name || 'Super Admin'}</strong> ({currentUser?.email || 'superadmin@hms.com'}).
-                You have master authority to inspect and manage <strong>everybody&apos;s data and operations</strong> across Nexus Care.
+                You have master authority to inspect and manage <strong>everybody&apos;s data and operations</strong> across CareNova.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">

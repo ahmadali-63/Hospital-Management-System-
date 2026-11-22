@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
 
       <section className="neon-rise relative w-full max-w-md rounded-3xl border border-white/20 bg-white/[0.08] p-8 shadow-[0_0_70px_rgba(34,211,238,0.16),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:p-10">
         <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-[0.2em] text-cyan-300">
-          <HeartPulse size={20} /> NEXUS CARE
+          <HeartPulse size={20} /> CARENOVA
         </Link>
 
         <div className="mt-8">

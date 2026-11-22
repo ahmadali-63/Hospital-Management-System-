@@ -7,7 +7,7 @@ export default function Home() {
       <main className="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-6 py-20 lg:px-12">
         <div className="flex items-center gap-2 mb-6 text-sm font-bold tracking-[0.2em] text-cyan-300">
           <HeartPulse size={22} />
-          NEXUS CARE
+          CARENOVA
         </div>
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">
           Hospital Management System MVP
