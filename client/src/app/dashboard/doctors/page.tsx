@@ -141,26 +141,26 @@ export default function DoctorsPage() {
   const isAdmin = currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPER_ADMIN';
 
   return (
-    <section className="max-w-7xl">
-      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end pb-6 mb-6 border-b border-gray-200">
+    <section className="max-w-7xl space-y-6">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center pb-4 border-b border-white/10">
         <div>
           <div className="flex items-center gap-3">
-            <span className="rounded-xl bg-cyan-100 p-2 text-cyan-700">
+            <span className="p-2 rounded-xl bg-cyan-400/20 border border-cyan-400/30 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.3)]">
               <Stethoscope size={22} />
             </span>
-            <h1 className="text-2xl font-bold text-gray-900">Doctors</h1>
+            <h1 className="text-2xl font-black text-white tracking-tight">Doctors Directory</h1>
           </div>
-          <p className="mt-1 text-sm text-gray-500">Manage clinicians, specialties, and consultation availability.</p>
+          <p className="mt-1 text-sm text-slate-400 font-light">Manage clinicians, specialties, and consultation availability.</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <label className="relative block w-full sm:max-w-xs">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search doctors..."
-              className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none focus:border-cyan-400"
+              className="glass-input w-full rounded-xl py-2.5 pl-10 pr-4 text-sm text-white outline-none placeholder:text-slate-500"
             />
           </label>
 
@@ -170,43 +170,43 @@ export default function DoctorsPage() {
                 setModalError('');
                 setShowModal(true);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-cyan-600 text-white text-sm font-semibold rounded-xl hover:bg-cyan-700 transition"
+              className="glass-btn-primary inline-flex items-center gap-2 px-4 py-2.5 text-slate-950 text-xs font-bold rounded-xl transition cursor-pointer shadow-md"
             >
-              <UserPlus size={18} /> Add Doctor
+              <UserPlus size={16} /> Add Doctor
             </button>
           )}
         </div>
       </div>
 
       {successMsg && (
-        <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-200 text-sm flex items-center justify-between backdrop-blur-md">
           <span>{successMsg}</span>
-          <button onClick={() => setSuccessMsg('')} className="text-emerald-600 hover:text-emerald-800">
+          <button onClick={() => setSuccessMsg('')} className="text-emerald-400 hover:text-emerald-200 cursor-pointer">
             <X size={16} />
           </button>
         </div>
       )}
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-400/30 text-rose-200 text-sm flex items-center justify-between backdrop-blur-md">
           <span>{error}</span>
-          <button onClick={() => setError('')} className="text-rose-600 hover:text-rose-800">
+          <button onClick={() => setError('')} className="text-rose-400 hover:text-rose-200 cursor-pointer">
             <X size={16} />
           </button>
         </div>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        {isLoading && <p className="p-8 text-center text-sm text-gray-500">Loading doctor records...</p>}
+      <div className="glass-card rounded-2xl shadow-xl overflow-hidden border-white/10">
+        {isLoading && <p className="p-8 text-center text-sm text-slate-400">Loading doctor records...</p>}
 
         {!isLoading && filteredDoctors.length === 0 && (
-          <p className="p-8 text-center text-sm text-gray-500">No doctors found.</p>
+          <p className="p-8 text-center text-sm text-slate-400">No doctors found.</p>
         )}
 
         {!isLoading && filteredDoctors.length > 0 && (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-sm">
-              <thead className="border-b bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+            <table className="min-w-full text-left text-sm text-slate-300">
+              <thead className="border-b border-white/10 bg-white/[0.04] text-xs uppercase tracking-wider text-slate-400">
                 <tr>
                   <th className="px-5 py-4">Doctor</th>
                   <th className="px-5 py-4">Specialty</th>
@@ -217,33 +217,33 @@ export default function DoctorsPage() {
                   <th className="px-5 py-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-white/5">
                 {filteredDoctors.map((doctor) => (
-                  <tr key={doctor._id} className="hover:bg-cyan-50/40">
+                  <tr key={doctor._id} className="hover:bg-white/[0.04] transition">
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-gray-900">{doctor.name}</p>
-                      <p className="text-xs text-gray-500">{doctor.doctorId}</p>
+                      <p className="font-bold text-white">{doctor.name}</p>
+                      <p className="text-xs text-slate-400 font-mono">{doctor.doctorId}</p>
                     </td>
-                    <td className="px-5 py-4 text-gray-700">
+                    <td className="px-5 py-4 text-slate-200">
                       {doctor.specialization}
-                      <p className="text-xs text-gray-500">{doctor.qualification}</p>
+                      <p className="text-xs text-slate-400">{doctor.qualification}</p>
                     </td>
-                    <td className="px-5 py-4 text-gray-700">
+                    <td className="px-5 py-4 text-slate-300">
                       {doctor.department?.name || 'General Medicine'}
                     </td>
-                    <td className="px-5 py-4 text-gray-700">{doctor.experience} years</td>
-                    <td className="px-5 py-4 text-gray-800 font-semibold">
+                    <td className="px-5 py-4 text-slate-300">{doctor.experience} years</td>
+                    <td className="px-5 py-4 text-amber-300 font-semibold font-mono">
                       PKR {doctor.consultationFee.toLocaleString()}
                     </td>
                     <td className="px-5 py-4">
-                      <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                      <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300 border border-emerald-400/30">
                         {doctor.status}
                       </span>
                     </td>
                     <td className="px-5 py-4 text-right">
                       <Link
                         href="/dashboard/appointments"
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-cyan-50 text-cyan-700 hover:bg-cyan-100 transition"
+                        className="glass-pill inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl text-cyan-300 hover:text-white transition"
                       >
                         <Calendar size={13} /> Book Visit
                       </Link>
@@ -257,20 +257,20 @@ export default function DoctorsPage() {
       </div>
 
       {!isLoading && !error && (
-        <p className="mt-3 text-sm text-gray-500">
+        <p className="text-xs text-slate-400 font-mono">
           Showing {filteredDoctors.length} of {doctors.length} doctors.
         </p>
       )}
 
       {/* Add Doctor Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <UserPlus className="text-cyan-600" size={20} /> Register New Doctor
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="glass-card rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto border-white/15">
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+              <h3 className="text-lg font-black text-white flex items-center gap-2">
+                <UserPlus className="text-cyan-400" size={20} /> Register New Doctor
               </h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-white cursor-pointer">
                 <X size={20} />
               </button>
             </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 export const metadata: Metadata = {
   title: "CareNova - Hospital Management",
@@ -13,8 +14,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased bg-gray-50 text-gray-900 font-sans">
+    <html lang="en" className="dark">
+      <body className="antialiased bg-[#050814] text-slate-100 font-sans min-h-screen selection:bg-cyan-400 selection:text-slate-950 relative">
+        <AnimatedBackground />
         <Providers>
           {children}
         </Providers>

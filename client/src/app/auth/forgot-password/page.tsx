@@ -73,12 +73,17 @@ export default function ForgotPasswordPage() {
 
   return (
     <main className="neon-page neon-grid relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-12 text-white">
-      <div className="neon-orb absolute -left-24 top-12 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl" />
-      <div className="neon-orb absolute -right-20 bottom-10 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
+      {/* Dynamic Animated Aurora Background Orbs */}
+      <div className="neon-orb absolute -top-24 -left-24 h-96 w-96 rounded-full bg-cyan-400/20 blur-[100px] pointer-events-none" />
+      <div className="neon-orb-reverse absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-fuchsia-500/20 blur-[110px] pointer-events-none" />
+      <div className="neon-orb-orbit absolute top-1/2 -right-16 h-72 w-72 rounded-full bg-emerald-400/15 blur-[90px] pointer-events-none" />
 
-      <section className="neon-rise relative w-full max-w-md rounded-3xl border border-white/20 bg-white/[0.08] p-8 shadow-[0_0_70px_rgba(34,211,238,0.16),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:p-10">
-        <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-[0.2em] text-cyan-300">
-          <HeartPulse size={20} /> CARENOVA
+      <section className="glass-card neon-rise relative w-full max-w-md rounded-3xl p-8 backdrop-blur-2xl sm:p-10 z-10">
+        <Link href="/" className="flex items-center gap-2.5 text-sm font-bold tracking-[0.2em] text-cyan-300 group">
+          <div className="p-1.5 rounded-lg bg-cyan-400/20 border border-cyan-400/30 text-cyan-300 group-hover:scale-105 transition">
+            <HeartPulse size={18} className="animate-pulse" />
+          </div>
+          <span>CARENOVA</span>
         </Link>
 
         <div className="mt-8">
@@ -88,11 +93,11 @@ export default function ForgotPasswordPage() {
           >
             <ArrowLeft size={14} /> Back to Log in
           </Link>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-fuchsia-500/20 px-2.5 py-0.5 text-xs font-semibold text-fuchsia-300 border border-fuchsia-400/30">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-semibold text-fuchsia-300 border border-fuchsia-400/30">
             <KeyRound size={13} /> Account Recovery
           </div>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">Reset your password.</h1>
-          <p className="mt-2 text-sm leading-6 text-slate-400">
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight">Reset your password.</h1>
+          <p className="mt-2 text-sm leading-6 text-slate-300 font-light">
             {step === 'EMAIL'
               ? 'Enter your registered email address to verify your account.'
               : 'Choose your new password below.'}
@@ -111,14 +116,14 @@ export default function ForgotPasswordPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your registered email"
-                className="mt-2 w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20"
+                className="glass-input mt-2 w-full rounded-xl px-4 py-3 text-white outline-none placeholder:text-slate-500"
                 required
               />
             </div>
 
             {message && (
-              <div role="alert" className="flex items-center gap-2 rounded-lg border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-200">
-                <AlertCircle size={16} className="shrink-0" />
+              <div role="alert" className="flex items-center gap-2 rounded-xl border border-rose-400/30 bg-rose-500/15 backdrop-blur-md px-3.5 py-2.5 text-sm text-rose-200">
+                <AlertCircle size={16} className="shrink-0 text-rose-400" />
                 <span>{message}</span>
               </div>
             )}
@@ -126,7 +131,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 font-bold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="glass-btn-primary flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 font-bold text-slate-950 transition disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer shadow-lg shadow-cyan-400/20"
             >
               {isLoading ? 'Verifying email...' : 'Verify Email'} {!isLoading && <ArrowRight size={18} />}
             </button>
@@ -153,7 +158,7 @@ export default function ForgotPasswordPage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="At least 6 characters"
-                  className="w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 pr-12 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20"
+                  className="glass-input w-full rounded-xl px-4 py-3 pr-12 text-white outline-none placeholder:text-slate-500"
                   required
                 />
                 <button
@@ -161,18 +166,17 @@ export default function ForgotPasswordPage() {
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   title={showPassword ? 'Hide password' : 'Show password'}
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className={`absolute right-2.5 top-1/2 -translate-y-1/2 z-30 cursor-pointer rounded-lg p-2 transition select-none ${
-                    showPassword
-                      ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40 shadow-sm'
-                      : 'text-slate-300 hover:text-cyan-300 hover:bg-white/[0.1]'
-                  }`}
+                  className={`absolute right-2.5 top-1/2 -translate-y-1/2 z-30 cursor-pointer rounded-lg p-2 transition select-none ${showPassword
+                    ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40 shadow-sm'
+                    : 'text-slate-300 hover:text-cyan-300 hover:bg-white/[0.1]'
+                    }`}
                 >
                   {showPassword ? <EyeOff size={19} className="pointer-events-none" /> : <Eye size={19} className="pointer-events-none" />}
                 </button>
               </div>
 
               {showPassword && newPassword && (
-                <div className="mt-2 flex items-center justify-between rounded-lg border border-cyan-500/30 bg-cyan-950/40 px-3 py-1.5 text-xs text-cyan-200">
+                <div className="mt-2 flex items-center justify-between rounded-xl border border-cyan-500/30 bg-cyan-950/60 backdrop-blur-md px-3.5 py-2 text-xs text-cyan-200 shadow-inner">
                   <span className="font-semibold text-cyan-400">Password preview:</span>
                   <span className="font-mono select-all text-white font-bold">{newPassword}</span>
                 </div>
@@ -189,21 +193,21 @@ export default function ForgotPasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Repeat new password"
-                className="mt-2 w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20"
+                className="glass-input mt-2 w-full rounded-xl px-4 py-3 text-white outline-none placeholder:text-slate-500"
                 required
               />
             </div>
 
             {message && (
-              <div role="alert" className="flex items-center gap-2 rounded-lg border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-200">
-                <AlertCircle size={16} className="shrink-0" />
+              <div role="alert" className="flex items-center gap-2 rounded-xl border border-rose-400/30 bg-rose-500/15 backdrop-blur-md px-3.5 py-2.5 text-sm text-rose-200">
+                <AlertCircle size={16} className="shrink-0 text-rose-400" />
                 <span>{message}</span>
               </div>
             )}
 
             {successMessage && (
-              <div className="flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-200">
-                <CheckCircle2 size={16} className="shrink-0" />
+              <div className="flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-500/15 backdrop-blur-md px-3.5 py-2.5 text-sm text-emerald-200">
+                <CheckCircle2 size={16} className="shrink-0 text-emerald-400" />
                 <span>{successMessage}</span>
               </div>
             )}
@@ -211,7 +215,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 font-bold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="glass-btn-primary flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 font-bold text-slate-950 transition disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer shadow-lg shadow-cyan-400/20"
             >
               {isLoading ? 'Updating password...' : 'Update Password & Log in'} {!isLoading && <ArrowRight size={18} />}
             </button>

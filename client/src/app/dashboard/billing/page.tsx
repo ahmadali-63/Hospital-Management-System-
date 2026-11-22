@@ -165,16 +165,16 @@ export default function BillingPage() {
   const totalOutstanding = bills.reduce((acc, b) => acc + (b.remainingAmount || 0), 0);
 
   return (
-    <section className="max-w-7xl">
+    <section className="max-w-7xl space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-gray-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-4">
         <div className="flex items-center gap-3">
-          <span className="p-2 rounded-xl bg-cyan-100 text-cyan-700">
+          <span className="p-2.5 rounded-xl bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
             <FileText size={24} />
           </span>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Billing & Invoices</h1>
-            <p className="text-sm text-gray-500">Track charges, consultation fees, and payments.</p>
+            <h1 className="text-2xl font-black text-white tracking-tight">Billing & Invoices</h1>
+            <p className="text-sm text-slate-400 font-light">Track charges, consultation fees, and payments.</p>
           </div>
         </div>
 
@@ -184,63 +184,63 @@ export default function BillingPage() {
               setGenerateError('');
               setShowGenerateModal(true);
             }}
-            className="mt-4 sm:mt-0 inline-flex items-center gap-2 px-4 py-2.5 bg-cyan-600 text-white text-sm font-semibold rounded-xl hover:bg-cyan-700 transition"
+            className="glass-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-slate-950 text-xs font-bold rounded-xl transition cursor-pointer shadow-lg"
           >
-            <Plus size={18} /> Generate Bill
+            <Plus size={16} /> Generate Bill
           </button>
         )}
       </div>
 
       {successMsg && (
-        <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-200 text-sm flex items-center justify-between backdrop-blur-md">
           <span>{successMsg}</span>
-          <button onClick={() => setSuccessMsg('')} className="text-emerald-600 hover:text-emerald-800">
+          <button onClick={() => setSuccessMsg('')} className="text-emerald-400 hover:text-emerald-200 cursor-pointer">
             <X size={16} />
           </button>
         </div>
       )}
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-400/30 text-rose-200 text-sm flex items-center justify-between backdrop-blur-md">
           <span>{error}</span>
-          <button onClick={() => setError('')} className="text-rose-600 hover:text-rose-800">
+          <button onClick={() => setError('')} className="text-rose-400 hover:text-rose-200 cursor-pointer">
             <X size={16} />
           </button>
         </div>
       )}
 
       {/* Summary Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
-          <p className="text-xs uppercase font-bold text-gray-500">Total Invoiced</p>
-          <p className="mt-1 text-2xl font-bold text-gray-900">PKR {totalBilled.toLocaleString()}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="glass-card-interactive p-5 rounded-2xl border-white/10 shadow-lg">
+          <p className="text-xs uppercase font-bold text-slate-400 tracking-wider">Total Invoiced</p>
+          <p className="mt-2 text-3xl font-black text-white">PKR {totalBilled.toLocaleString()}</p>
         </div>
-        <div className="p-5 rounded-xl border border-emerald-100 bg-emerald-50/60 shadow-sm">
-          <p className="text-xs uppercase font-bold text-emerald-700">Total Collected</p>
-          <p className="mt-1 text-2xl font-bold text-emerald-800">PKR {totalPaid.toLocaleString()}</p>
+        <div className="glass-card-interactive p-5 rounded-2xl border-emerald-400/30 shadow-lg">
+          <p className="text-xs uppercase font-bold text-emerald-400 tracking-wider">Total Collected</p>
+          <p className="mt-2 text-3xl font-black text-emerald-300">PKR {totalPaid.toLocaleString()}</p>
         </div>
-        <div className="p-5 rounded-xl border border-rose-100 bg-rose-50/60 shadow-sm">
-          <p className="text-xs uppercase font-bold text-rose-700">Outstanding Balance</p>
-          <p className="mt-1 text-2xl font-bold text-rose-800">PKR {totalOutstanding.toLocaleString()}</p>
+        <div className="glass-card-interactive p-5 rounded-2xl border-rose-400/30 shadow-lg">
+          <p className="text-xs uppercase font-bold text-rose-400 tracking-wider">Outstanding Balance</p>
+          <p className="mt-2 text-3xl font-black text-rose-300">PKR {totalOutstanding.toLocaleString()}</p>
         </div>
       </div>
 
       {/* Bills Table */}
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        {isLoading && <p className="p-8 text-center text-sm text-gray-500">Loading bills...</p>}
+      <div className="glass-card rounded-2xl shadow-xl overflow-hidden border-white/10">
+        {isLoading && <p className="p-8 text-center text-sm text-slate-400">Loading bills...</p>}
 
         {!isLoading && bills.length === 0 && (
           <div className="p-12 text-center">
-            <FileText className="mx-auto text-gray-300 mb-3" size={42} />
-            <h2 className="text-base font-semibold text-gray-900">No bills generated yet</h2>
-            <p className="mt-1 text-sm text-gray-500">Generated patient bills will appear here.</p>
+            <FileText className="mx-auto text-slate-500 mb-3" size={42} />
+            <h2 className="text-base font-bold text-white">No bills generated yet</h2>
+            <p className="mt-1 text-sm text-slate-400">Generated patient bills will appear here.</p>
           </div>
         )}
 
         {!isLoading && bills.length > 0 && (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-sm">
-              <thead className="border-b bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+            <table className="min-w-full text-left text-sm text-slate-300">
+              <thead className="border-b border-white/10 bg-white/[0.04] text-xs uppercase tracking-wider text-slate-400">
                 <tr>
                   <th className="px-5 py-4">Invoice #</th>
                   <th className="px-5 py-4">Patient</th>
@@ -253,46 +253,47 @@ export default function BillingPage() {
                   {isAdmin && <th className="px-5 py-4 text-right">Action</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-white/5">
                 {bills.map((bill) => {
-                  const statusColors = {
-                    Pending: 'bg-amber-50 text-amber-700 border-amber-200',
-                    'Partially Paid': 'bg-blue-50 text-blue-700 border-blue-200',
-                    Paid: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                  const statusColors: Record<string, string> = {
+                    Pending: 'bg-amber-500/25 text-amber-300 border-amber-400/50 shadow-[0_0_10px_rgba(251,191,36,0.3)]',
+                    'Partially Paid': 'bg-cyan-500/25 text-cyan-300 border-cyan-400/50 shadow-[0_0_10px_rgba(34,211,238,0.3)]',
+                    Paid: 'bg-emerald-500/25 text-emerald-300 border-emerald-400/50 shadow-[0_0_10px_rgba(52,211,153,0.3)]',
                   };
 
                   return (
-                    <tr key={bill._id} className="hover:bg-gray-50/50">
-                      <td className="px-5 py-4 font-semibold text-gray-900">{bill.billId}</td>
-                      <td className="px-5 py-4 text-gray-700">
-                        <p className="font-medium text-gray-900">{bill.patient?.name || 'Patient'}</p>
+                    <tr key={bill._id} className="hover:bg-white/[0.04] transition">
+                      <td className="px-5 py-4 font-mono font-bold text-white">{bill.billId}</td>
+                      <td className="px-5 py-4">
+                        <p className="font-semibold text-white">{bill.patient?.name || 'Patient'}</p>
                         {bill.patient?.patientId && (
-                          <p className="text-xs text-gray-400">{bill.patient.patientId}</p>
+                          <p className="text-xs text-slate-400 font-mono">{bill.patient.patientId}</p>
                         )}
                       </td>
-                      <td className="px-5 py-4 text-gray-700 whitespace-nowrap">
+                      <td className="px-5 py-4 text-slate-400 whitespace-nowrap font-mono text-xs">
                         {new Date(bill.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-5 py-4 text-xs text-gray-500">
-                        {bill.consultationFee > 0 && <span>Consult: PKR {bill.consultationFee} </span>}
-                        {bill.bedCharges > 0 && <span>Bed: PKR {bill.bedCharges} </span>}
-                        {bill.emergencyCharges > 0 && <span>Emr: PKR {bill.emergencyCharges} </span>}
+                      <td className="px-5 py-4 text-xs text-slate-300">
+                        {bill.consultationFee > 0 && <div>Consult: PKR {bill.consultationFee}</div>}
+                        {bill.bedCharges > 0 && <div>Bed: PKR {bill.bedCharges}</div>}
+                        {bill.emergencyCharges > 0 && <div>Emr: PKR {bill.emergencyCharges}</div>}
                       </td>
-                      <td className="px-5 py-4 text-gray-900 font-bold">
+                      <td className="px-5 py-4 text-white font-bold font-mono">
                         PKR {bill.totalAmount.toLocaleString()}
                       </td>
-                      <td className="px-5 py-4 text-emerald-700 font-semibold">
+                      <td className="px-5 py-4 text-emerald-300 font-semibold font-mono">
                         PKR {bill.paidAmount.toLocaleString()}
                       </td>
-                      <td className="px-5 py-4 text-rose-700 font-semibold">
+                      <td className="px-5 py-4 text-rose-300 font-semibold font-mono">
                         PKR {bill.remainingAmount.toLocaleString()}
                       </td>
                       <td className="px-5 py-4">
                         <span
-                          className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
-                            statusColors[bill.status] || 'bg-gray-100 text-gray-700'
+                          className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full border shadow-sm ${
+                            statusColors[bill.status] || 'bg-slate-700/50 text-slate-200 border-slate-500/40'
                           }`}
                         >
+                          <span className="h-1.5 w-1.5 rounded-full bg-current shadow-[0_0_6px_currentColor]" />
                           {bill.status}
                         </span>
                       </td>
@@ -305,7 +306,7 @@ export default function BillingPage() {
                                 setPayAmount(bill.remainingAmount);
                                 setPayError('');
                               }}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-400/30 transition cursor-pointer"
                             >
                               <CreditCard size={14} /> Pay
                             </button>
@@ -323,30 +324,30 @@ export default function BillingPage() {
 
       {/* Generate Bill Modal */}
       {showGenerateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <FileText className="text-cyan-600" size={20} /> Generate Patient Bill
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="glass-card rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto border-white/15">
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <FileText className="text-cyan-400" size={20} /> Generate Patient Bill
               </h3>
-              <button onClick={() => setShowGenerateModal(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setShowGenerateModal(false)} className="text-slate-400 hover:text-white transition cursor-pointer">
                 <X size={20} />
               </button>
             </div>
 
             {generateError && (
-              <p className="mb-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+              <p className="mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-200 text-xs font-medium">
                 {generateError}
               </p>
             )}
 
             <form onSubmit={handleGenerateBill} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Select Patient</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Select Patient</label>
                 <select
                   value={form.patientId}
                   onChange={(e) => setForm({ ...form, patientId: e.target.value })}
-                  className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2.5 bg-white outline-none focus:border-cyan-500"
+                  className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
                   required
                 >
                   <option value="">-- Choose Patient --</option>
@@ -359,13 +360,13 @@ export default function BillingPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Link Appointment (Optional - imports consultation fee)
                 </label>
                 <select
                   value={form.appointmentId}
                   onChange={(e) => setForm({ ...form, appointmentId: e.target.value })}
-                  className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2.5 bg-white outline-none focus:border-cyan-500"
+                  className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
                 >
                   <option value="">-- None / Direct Charge --</option>
                   {appointments.map((a) => (
@@ -378,49 +379,49 @@ export default function BillingPage() {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Bed Charges (PKR)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Bed Charges (PKR)</label>
                   <input
                     type="number"
                     min="0"
                     value={form.bedCharges}
                     onChange={(e) => setForm({ ...form, bedCharges: Number(e.target.value) })}
-                    className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                    className="glass-input w-full text-sm rounded-xl px-3 py-2 text-white outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Emergency (PKR)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Emergency (PKR)</label>
                   <input
                     type="number"
                     min="0"
                     value={form.emergencyCharges}
                     onChange={(e) => setForm({ ...form, emergencyCharges: Number(e.target.value) })}
-                    className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                    className="glass-input w-full text-sm rounded-xl px-3 py-2 text-white outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Other (PKR)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Other (PKR)</label>
                   <input
                     type="number"
                     min="0"
                     value={form.otherCharges}
                     onChange={(e) => setForm({ ...form, otherCharges: Number(e.target.value) })}
-                    className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                    className="glass-input w-full text-sm rounded-xl px-3 py-2 text-white outline-none"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-3">
+              <div className="flex justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowGenerateModal(false)}
-                  className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white glass-pill rounded-xl transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 text-sm font-semibold bg-cyan-600 text-white rounded-xl hover:bg-cyan-700 transition disabled:opacity-50"
+                  className="glass-btn-primary px-5 py-2 text-xs font-bold text-slate-950 rounded-xl transition disabled:opacity-50 cursor-pointer shadow-lg"
                 >
                   {isSubmitting ? 'Generating...' : 'Create Invoice'}
                 </button>
@@ -432,49 +433,49 @@ export default function BillingPage() {
 
       {/* Record Payment Modal */}
       {selectedBillForPay && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <CreditCard className="text-emerald-600" size={20} /> Record Payment
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="glass-card rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border-white/15">
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <CreditCard className="text-emerald-400" size={20} /> Record Payment
               </h3>
-              <button onClick={() => setSelectedBillForPay(null)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setSelectedBillForPay(null)} className="text-slate-400 hover:text-white transition cursor-pointer">
                 <X size={20} />
               </button>
             </div>
 
             {payError && (
-              <p className="mb-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+              <p className="mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-200 text-xs font-medium">
                 {payError}
               </p>
             )}
 
-            <div className="mb-4 p-3.5 bg-gray-50 rounded-xl border border-gray-200 text-xs space-y-1">
+            <div className="mb-4 p-4 rounded-xl bg-white/[0.04] border border-white/10 text-xs space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-500">Invoice:</span>
-                <span className="font-semibold text-gray-900">{selectedBillForPay.billId}</span>
+                <span className="text-slate-400">Invoice:</span>
+                <span className="font-mono font-bold text-white">{selectedBillForPay.billId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Patient:</span>
-                <span className="font-semibold text-gray-900">{selectedBillForPay.patient?.name}</span>
+                <span className="text-slate-400">Patient:</span>
+                <span className="font-semibold text-white">{selectedBillForPay.patient?.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Total Billed:</span>
-                <span className="font-semibold text-gray-900">PKR {selectedBillForPay.totalAmount.toLocaleString()}</span>
+                <span className="text-slate-400">Total Billed:</span>
+                <span className="font-bold text-white font-mono">PKR {selectedBillForPay.totalAmount.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Already Paid:</span>
-                <span className="font-semibold text-emerald-700">PKR {selectedBillForPay.paidAmount.toLocaleString()}</span>
+                <span className="text-slate-400">Already Paid:</span>
+                <span className="font-bold text-emerald-300 font-mono">PKR {selectedBillForPay.paidAmount.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between border-t border-gray-200 pt-1 text-sm font-bold">
-                <span className="text-gray-700">Remaining Balance:</span>
-                <span className="text-rose-600">PKR {selectedBillForPay.remainingAmount.toLocaleString()}</span>
+              <div className="flex justify-between border-t border-white/10 pt-2 text-sm font-bold">
+                <span className="text-slate-200">Remaining Balance:</span>
+                <span className="text-rose-300 font-mono">PKR {selectedBillForPay.remainingAmount.toLocaleString()}</span>
               </div>
             </div>
 
             <form onSubmit={handleRecordPayment} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Payment Amount (PKR)
                 </label>
                 <input
@@ -483,23 +484,23 @@ export default function BillingPage() {
                   max={selectedBillForPay.remainingAmount}
                   value={payAmount}
                   onChange={(e) => setPayAmount(Number(e.target.value))}
-                  className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-emerald-500"
+                  className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none"
                   required
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3">
+              <div className="flex justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setSelectedBillForPay(null)}
-                  className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white glass-pill rounded-xl transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition disabled:opacity-50"
+                  className="px-5 py-2 text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl hover:from-emerald-400 hover:to-teal-500 transition shadow-[0_0_15px_rgba(16,185,129,0.35)] disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? 'Recording...' : 'Confirm Payment'}
                 </button>

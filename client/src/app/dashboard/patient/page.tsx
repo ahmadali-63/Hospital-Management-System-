@@ -311,16 +311,17 @@ export default function PatientDashboard() {
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       <span
-                        className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${
+                        className={`inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full font-bold border shadow-sm ${
                           apt.status === 'Confirmed'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-emerald-500/25 text-emerald-300 border-emerald-400/50 shadow-[0_0_10px_rgba(52,211,153,0.3)]'
                             : apt.status === 'Completed'
-                            ? 'bg-blue-100 text-blue-800'
+                            ? 'bg-blue-500/25 text-blue-300 border-blue-400/50 shadow-[0_0_10px_rgba(96,165,250,0.3)]'
                             : apt.status === 'Cancelled'
-                            ? 'bg-rose-100 text-rose-800'
-                            : 'bg-amber-100 text-amber-800'
+                            ? 'bg-rose-500/25 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.3)]'
+                            : 'bg-amber-500/25 text-amber-300 border-amber-400/50 shadow-[0_0_10px_rgba(251,191,36,0.3)]'
                         }`}
                       >
+                        <span className="h-1.5 w-1.5 rounded-full bg-current shadow-[0_0_6px_currentColor]" />
                         {apt.status}
                       </span>
                       {isUpcoming && (

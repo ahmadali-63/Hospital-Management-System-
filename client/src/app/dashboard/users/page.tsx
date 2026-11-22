@@ -181,30 +181,30 @@ export default function UsersDirectoryPage() {
   function getRoleBadge(role: UserMember['role']) {
     switch (role) {
       case 'SUPER_ADMIN':
-        return 'bg-amber-100 text-amber-900 border border-amber-300 font-bold';
+        return 'bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold';
       case 'ADMIN':
-        return 'bg-cyan-100 text-cyan-800 border border-cyan-300 font-semibold';
+        return 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 font-semibold';
       case 'DOCTOR':
-        return 'bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold';
+        return 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-semibold';
       case 'STAFF':
-        return 'bg-purple-100 text-purple-800 border border-purple-300 font-semibold';
+        return 'bg-purple-500/20 text-purple-300 border border-purple-400/40 font-semibold';
       case 'PATIENT':
-        return 'bg-blue-100 text-blue-800 border border-blue-200 font-semibold';
+        return 'bg-blue-500/20 text-blue-300 border border-blue-400/40 font-semibold';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-white/10 text-white border border-white/10';
     }
   }
 
   return (
-    <div className="max-w-7xl space-y-8">
+    <div className="max-w-7xl space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-gray-200 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 mb-2">
-            <ShieldCheck size={14} /> Super Admin Control
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/20 px-3 py-0.5 text-xs font-bold text-amber-300 border border-amber-400/40 mb-2 shadow-sm">
+            <ShieldCheck size={14} className="text-amber-400" /> Super Admin Control
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Hospital Member Directory</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-black text-white tracking-tight">Hospital Member Directory</h1>
+          <p className="mt-1 text-sm text-slate-400 font-light">
             View, audit, and manage all registered members across all roles.
           </p>
         </div>
@@ -212,147 +212,147 @@ export default function UsersDirectoryPage() {
         <button
           onClick={loadUsers}
           disabled={isLoading}
-          className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition shadow-sm self-start sm:self-auto"
+          className="inline-flex items-center gap-2 rounded-xl glass-pill px-4 py-2 text-xs font-semibold text-white hover:text-cyan-300 hover:border-cyan-400/50 transition self-start sm:self-auto cursor-pointer"
         >
-          <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+          <RefreshCw size={14} className={isLoading ? 'animate-spin text-cyan-300' : 'text-cyan-400'} />
           Refresh Members
         </button>
       </div>
 
       {message && (
         <div
-          className={`flex items-center gap-3 p-4 rounded-xl border text-sm font-medium ${
+          className={`flex items-center gap-3 p-4 rounded-xl border text-sm font-medium backdrop-blur-md ${
             message.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-rose-50 border-rose-200 text-rose-800'
+              ? 'bg-emerald-500/15 border-emerald-400/30 text-emerald-200'
+              : 'bg-rose-500/15 border-rose-400/30 text-rose-200'
           }`}
         >
-          {message.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+          {message.type === 'success' ? <CheckCircle2 size={18} className="text-emerald-400" /> : <AlertCircle size={18} className="text-rose-400" />}
           {message.text}
         </div>
       )}
 
       {/* KPI Cards across Roles */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
         <div
           onClick={() => setSelectedRole('ALL')}
-          className={`cursor-pointer rounded-xl border p-4 transition ${
+          className={`cursor-pointer rounded-2xl p-4 transition glass-card-interactive ${
             selectedRole === 'ALL'
-              ? 'border-cyan-500 bg-cyan-50/50 shadow-sm'
-              : 'border-gray-100 bg-white hover:border-gray-200'
+              ? 'border-cyan-400 bg-cyan-500/20 shadow-[0_0_20px_rgba(34,211,238,0.25)]'
+              : ''
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-gray-500 uppercase">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-400 uppercase tracking-wider">
             <span>Total</span>
-            <Users size={16} className="text-gray-400" />
+            <Users size={16} className="text-cyan-400" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-gray-900">{counts.total}</p>
-          <p className="text-[11px] text-gray-400">All registered</p>
+          <p className="mt-2 text-2xl font-black text-white">{counts.total}</p>
+          <p className="text-[11px] text-slate-400">All registered</p>
         </div>
 
         <div
           onClick={() => setSelectedRole('SUPER_ADMIN')}
-          className={`cursor-pointer rounded-xl border p-4 transition ${
+          className={`cursor-pointer rounded-2xl p-4 transition glass-card-interactive ${
             selectedRole === 'SUPER_ADMIN'
-              ? 'border-amber-500 bg-amber-50/50 shadow-sm'
-              : 'border-gray-100 bg-white hover:border-gray-200'
+              ? 'border-amber-400 bg-amber-500/20 shadow-[0_0_20px_rgba(251,191,36,0.25)]'
+              : ''
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-amber-700 uppercase">
+          <div className="flex items-center justify-between text-xs font-semibold text-amber-300 uppercase tracking-wider">
             <span>Super Admin</span>
-            <ShieldCheck size={16} className="text-amber-600" />
+            <ShieldCheck size={16} className="text-amber-400" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-amber-900">{counts.SUPER_ADMIN || 1}</p>
-          <p className="text-[11px] text-amber-600/70">Root authority</p>
+          <p className="mt-2 text-2xl font-black text-amber-300">{counts.SUPER_ADMIN || 1}</p>
+          <p className="text-[11px] text-amber-300/70">Root authority</p>
         </div>
 
         <div
           onClick={() => setSelectedRole('ADMIN')}
-          className={`cursor-pointer rounded-xl border p-4 transition ${
+          className={`cursor-pointer rounded-2xl p-4 transition glass-card-interactive ${
             selectedRole === 'ADMIN'
-              ? 'border-cyan-500 bg-cyan-50/50 shadow-sm'
-              : 'border-gray-100 bg-white hover:border-gray-200'
+              ? 'border-cyan-400 bg-cyan-500/20 shadow-[0_0_20px_rgba(34,211,238,0.25)]'
+              : ''
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-cyan-700 uppercase">
+          <div className="flex items-center justify-between text-xs font-semibold text-cyan-300 uppercase tracking-wider">
             <span>Admins</span>
-            <Users size={16} className="text-cyan-600" />
+            <Users size={16} className="text-cyan-400" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-cyan-900">{counts.ADMIN}</p>
-          <p className="text-[11px] text-cyan-600/70">Hospital admins</p>
+          <p className="mt-2 text-2xl font-black text-cyan-300">{counts.ADMIN}</p>
+          <p className="text-[11px] text-cyan-300/70">Hospital admins</p>
         </div>
 
         <div
           onClick={() => setSelectedRole('DOCTOR')}
-          className={`cursor-pointer rounded-xl border p-4 transition ${
+          className={`cursor-pointer rounded-2xl p-4 transition glass-card-interactive ${
             selectedRole === 'DOCTOR'
-              ? 'border-emerald-500 bg-emerald-50/50 shadow-sm'
-              : 'border-gray-100 bg-white hover:border-gray-200'
+              ? 'border-emerald-400 bg-emerald-500/20 shadow-[0_0_20px_rgba(52,211,153,0.25)]'
+              : ''
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-emerald-700 uppercase">
+          <div className="flex items-center justify-between text-xs font-semibold text-emerald-300 uppercase tracking-wider">
             <span>Doctors</span>
-            <Stethoscope size={16} className="text-emerald-600" />
+            <Stethoscope size={16} className="text-emerald-400" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-emerald-900">{counts.DOCTOR}</p>
-          <p className="text-[11px] text-emerald-600/70">Clinical physicians</p>
+          <p className="mt-2 text-2xl font-black text-emerald-300">{counts.DOCTOR}</p>
+          <p className="text-[11px] text-emerald-300/70">Clinical physicians</p>
         </div>
 
         <div
           onClick={() => setSelectedRole('STAFF')}
-          className={`cursor-pointer rounded-xl border p-4 transition ${
+          className={`cursor-pointer rounded-2xl p-4 transition glass-card-interactive ${
             selectedRole === 'STAFF'
-              ? 'border-purple-500 bg-purple-50/50 shadow-sm'
-              : 'border-gray-100 bg-white hover:border-gray-200'
+              ? 'border-purple-400 bg-purple-500/20 shadow-[0_0_20px_rgba(192,132,252,0.25)]'
+              : ''
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-purple-700 uppercase">
+          <div className="flex items-center justify-between text-xs font-semibold text-purple-300 uppercase tracking-wider">
             <span>Staff</span>
-            <Briefcase size={16} className="text-purple-600" />
+            <Briefcase size={16} className="text-purple-400" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-purple-900">{counts.STAFF}</p>
-          <p className="text-[11px] text-purple-600/70">Operations & nursing</p>
+          <p className="mt-2 text-2xl font-black text-purple-300">{counts.STAFF}</p>
+          <p className="text-[11px] text-purple-300/70">Operations & nursing</p>
         </div>
 
         <div
           onClick={() => setSelectedRole('PATIENT')}
-          className={`cursor-pointer rounded-xl border p-4 transition ${
+          className={`cursor-pointer rounded-2xl p-4 transition glass-card-interactive ${
             selectedRole === 'PATIENT'
-              ? 'border-blue-500 bg-blue-50/50 shadow-sm'
-              : 'border-gray-100 bg-white hover:border-gray-200'
+              ? 'border-blue-400 bg-blue-500/20 shadow-[0_0_20px_rgba(96,165,250,0.25)]'
+              : ''
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-blue-700 uppercase">
+          <div className="flex items-center justify-between text-xs font-semibold text-blue-300 uppercase tracking-wider">
             <span>Patients</span>
-            <UserCheck size={16} className="text-blue-600" />
+            <UserCheck size={16} className="text-blue-400" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-blue-900">{counts.PATIENT}</p>
-          <p className="text-[11px] text-blue-600/70">Registered patients</p>
+          <p className="mt-2 text-2xl font-black text-blue-300">{counts.PATIENT}</p>
+          <p className="text-[11px] text-blue-300/70">Registered patients</p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm space-y-4">
+      <div className="glass-card rounded-2xl p-4 shadow-xl space-y-4">
         <div className="flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name, email, department, or phone..."
-              className="w-full rounded-xl border border-gray-200 bg-gray-50/50 pl-10 pr-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-500/20"
+              className="glass-input w-full rounded-xl pl-10 pr-4 py-2.5 text-sm text-white outline-none placeholder:text-slate-500"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-xs font-medium text-gray-700">
-              <Filter size={14} className="text-gray-400" />
+            <div className="flex items-center gap-1.5 rounded-xl glass-panel-subtle px-3 py-2 text-xs font-medium text-slate-300 border border-white/10">
+              <Filter size={14} className="text-cyan-400" />
               <span>Role:</span>
               <select
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
-                className="bg-transparent font-semibold text-gray-900 outline-none cursor-pointer"
+                className="bg-transparent font-semibold text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
               >
                 <option value="ALL">All Roles ({counts.total})</option>
                 <option value="SUPER_ADMIN">Super Admin</option>
@@ -363,12 +363,12 @@ export default function UsersDirectoryPage() {
               </select>
             </div>
 
-            <div className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-xs font-medium text-gray-700">
+            <div className="flex items-center gap-1.5 rounded-xl glass-panel-subtle px-3 py-2 text-xs font-medium text-slate-300 border border-white/10">
               <span>Status:</span>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as 'ALL' | 'ACTIVE' | 'INACTIVE')}
-                className="bg-transparent font-semibold text-gray-900 outline-none cursor-pointer"
+                className="bg-transparent font-semibold text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
               >
                 <option value="ALL">All Status</option>
                 <option value="ACTIVE">Active Only</option>
@@ -380,7 +380,7 @@ export default function UsersDirectoryPage() {
 
         {/* Active Filters Pill */}
         {(selectedRole !== 'ALL' || statusFilter !== 'ALL' || search) && (
-          <div className="flex items-center gap-2 pt-2 border-t border-gray-100 text-xs text-gray-500">
+          <div className="flex items-center gap-2 pt-2 border-t border-white/10 text-xs text-slate-400">
             <span>Showing {filteredUsers.length} of {users.length} members</span>
             <button
               onClick={() => {
@@ -388,7 +388,7 @@ export default function UsersDirectoryPage() {
                 setStatusFilter('ALL');
                 setSearch('');
               }}
-              className="text-cyan-600 hover:text-cyan-800 font-semibold"
+              className="text-cyan-300 hover:text-cyan-200 font-semibold cursor-pointer"
             >
               Clear filters
             </button>
@@ -397,30 +397,30 @@ export default function UsersDirectoryPage() {
       </div>
 
       {/* Members Directory Table */}
-      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div className="glass-card rounded-2xl shadow-xl overflow-hidden border-white/10">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-500">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-700 border-b border-gray-200">
+          <table className="w-full text-left text-sm text-slate-300">
+            <thead className="bg-white/[0.04] text-xs uppercase text-slate-400 border-b border-white/10">
               <tr>
-                <th className="px-6 py-3.5">Member</th>
-                <th className="px-6 py-3.5">Role</th>
-                <th className="px-6 py-3.5">Details & Dept</th>
-                <th className="px-6 py-3.5">Phone</th>
-                <th className="px-6 py-3.5">Status</th>
-                <th className="px-6 py-3.5">Joined</th>
-                <th className="px-6 py-3.5 text-right">Action</th>
+                <th className="px-6 py-4">Member</th>
+                <th className="px-6 py-4">Role</th>
+                <th className="px-6 py-4">Details & Dept</th>
+                <th className="px-6 py-4">Phone</th>
+                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4">Joined</th>
+                <th className="px-6 py-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-white/5">
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-sm text-gray-400">
+                  <td colSpan={7} className="px-6 py-10 text-center text-sm text-slate-400">
                     Loading member records...
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-sm text-gray-500">
+                  <td colSpan={7} className="px-6 py-12 text-center text-sm text-slate-400">
                     No members match your search criteria.
                   </td>
                 </tr>
@@ -436,15 +436,15 @@ export default function UsersDirectoryPage() {
                   const isSuperAdmin = member.role === 'SUPER_ADMIN';
 
                   return (
-                    <tr key={member._id} className="hover:bg-gray-50/80 transition">
+                    <tr key={member._id} className="hover:bg-white/[0.04] transition">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-full bg-slate-900 text-cyan-300 flex items-center justify-center font-bold text-xs uppercase shrink-0">
+                          <div className="h-9 w-9 rounded-xl bg-cyan-400/20 text-cyan-300 border border-cyan-400/30 flex items-center justify-center font-bold text-xs uppercase shrink-0 shadow-sm">
                             {initials}
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-900">{member.name}</p>
-                            <p className="text-xs text-gray-400">{member.email}</p>
+                            <p className="font-bold text-white">{member.name}</p>
+                            <p className="text-xs text-slate-400">{member.email}</p>
                           </div>
                         </div>
                       </td>
@@ -453,47 +453,47 @@ export default function UsersDirectoryPage() {
                           {member.role.replace('_', ' ')}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-xs text-gray-700">
+                      <td className="px-6 py-4 text-xs text-slate-300">
                         {member.specialization && <div>Spec: {member.specialization}</div>}
                         {member.department && <div>Dept: {member.department}</div>}
                         {member.designation && <div>Title: {member.designation}</div>}
                         {!member.specialization && !member.department && !member.designation && (
-                          <span className="text-gray-400">-</span>
+                          <span className="text-slate-500">-</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-xs text-gray-600">
-                        {member.phone || <span className="text-gray-400">N/A</span>}
+                      <td className="px-6 py-4 text-xs text-slate-300">
+                        {member.phone || <span className="text-slate-500">N/A</span>}
                       </td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                             member.isActive
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                              : 'bg-rose-50 text-rose-700 border border-rose-200'
+                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/30'
+                              : 'bg-rose-500/20 text-rose-300 border border-rose-400/30'
                           }`}
                         >
                           <span
                             className={`h-1.5 w-1.5 rounded-full ${
-                              member.isActive ? 'bg-emerald-500' : 'bg-rose-500'
+                              member.isActive ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'
                             }`}
                           />
                           {member.isActive ? 'Active' : 'Disabled'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-xs text-gray-500">
+                      <td className="px-6 py-4 text-xs text-slate-400 font-mono">
                         {new Date(member.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 text-right">
                         {isSuperAdmin ? (
-                          <span className="text-xs font-semibold text-gray-400 italic">Protected</span>
+                          <span className="text-xs font-semibold text-amber-400/80 italic">Protected</span>
                         ) : (
                           <button
                             onClick={() => handleToggleStatus(member)}
                             disabled={togglingId === member._id}
-                            className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                            className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold transition cursor-pointer ${
                               member.isActive
-                                ? 'border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'
-                                : 'border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                                ? 'glass-pill text-rose-300 border-rose-400/30 hover:bg-rose-500/20 hover:border-rose-400/50'
+                                : 'glass-pill text-emerald-300 border-emerald-400/30 hover:bg-emerald-500/20 hover:border-emerald-400/50'
                             }`}
                           >
                             {member.isActive ? <UserX size={13} /> : <UserCheck size={13} />}

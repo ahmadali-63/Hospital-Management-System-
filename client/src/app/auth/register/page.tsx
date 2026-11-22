@@ -71,7 +71,7 @@ function RegisterForm() {
   }, [searchParams]);
 
   const inputClass =
-    'mt-2 w-full rounded-xl border border-white/15 bg-transparent px-4 py-3 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20';
+    'glass-input mt-2 w-full rounded-xl px-4 py-3 text-white outline-none placeholder:text-slate-500';
   const selectClass = `${inputClass} [color-scheme:dark] [&>option]:bg-slate-900 [&>option]:text-white`;
 
   function updateField(field: keyof typeof initialForm, value: string) {
@@ -106,8 +106,15 @@ function RegisterForm() {
         router.push('/dashboard');
       }
     } catch (error) {
-      const resp = (error as AxiosError<{ message?: string }>).response;
-      setMessage(resp?.data?.message || 'Login failed. Please verify credentials.');
+      const resp = (error as AxiosError<{ message?: string; errors?: Array<{ message?: string }> }>).response;
+      const rawData = resp?.data as any;
+      const errText =
+        typeof rawData === 'string'
+          ? rawData
+          : rawData?.errors?.[0]?.message ||
+          rawData?.message ||
+          'Login failed. Please verify credentials.';
+      setMessage(errText);
     } finally {
       setIsLoading(false);
     }
@@ -184,27 +191,33 @@ function RegisterForm() {
       }
     } catch (error) {
       const resp = (error as AxiosError<{ message?: string; errors?: Array<{ message?: string }> }>).response;
+      const rawData = resp?.data as any;
       const validationError = resp?.data?.errors?.[0]?.message;
-      setMessage(validationError || resp?.data?.message || 'Registration failed. Check that the API and MongoDB are running.');
+      const errText =
+        validationError ||
+        (typeof rawData === 'string' ? rawData : rawData?.message) ||
+        'Registration failed. Check that the API and MongoDB are running.';
+      setMessage(errText);
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <main className="neon-page neon-grid relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-10 text-white">
-      {/* Background orbs with pointer-events-none */}
-      <div className="neon-orb absolute -left-24 top-12 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl pointer-events-none" />
-      <div className="neon-orb absolute -right-20 bottom-10 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl pointer-events-none" />
-
-      <section className="neon-rise relative w-full max-w-3xl rounded-3xl border border-white/20 bg-white/[0.08] p-7 shadow-[0_0_70px_rgba(34,211,238,0.16),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:p-10 z-10">
-        <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-[0.2em] text-cyan-300">
-          <HeartPulse size={20} /> CARENOVA
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-12 text-white bg-transparent">
+      <section className="glass-card neon-rise relative w-full max-w-3xl rounded-3xl p-7 backdrop-blur-2xl sm:p-10 z-10 border-white/15">
+        <Link href="/" className="flex items-center gap-2.5 text-sm font-bold tracking-[0.2em] text-cyan-300 group">
+          <div className="p-1.5 rounded-lg bg-cyan-400/20 border border-cyan-400/30 text-cyan-300 group-hover:scale-105 transition">
+            <HeartPulse size={18} className="animate-pulse" />
+          </div>
+          <span>CARENOVA</span>
         </Link>
         <div className="mt-8">
-          <p className="text-sm font-medium text-fuchsia-300">Registration & Onboarding</p>
-          <h1 className="mt-2 text-4xl font-bold tracking-tight">Create your account.</h1>
-          <p className="mt-3 text-sm leading-6 text-slate-400">
+          <span className="inline-block px-3 py-1 rounded-full bg-fuchsia-400/15 border border-fuchsia-400/30 text-xs font-semibold text-fuchsia-300">
+            Registration & Onboarding
+          </span>
+          <h1 className="mt-3 text-4xl font-extrabold tracking-tight">Create your account.</h1>
+          <p className="mt-2 text-sm leading-6 text-slate-300 font-light">
             Select your role to get access to your personalized portal.
           </p>
         </div>
@@ -218,11 +231,10 @@ function RegisterForm() {
               setRole('PATIENT');
               setMessage('');
             }}
-            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition cursor-pointer select-none ${
-              role === 'PATIENT'
-                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20 font-bold'
-                : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
-            }`}
+            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition cursor-pointer select-none ${role === 'PATIENT'
+              ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20 font-bold'
+              : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
+              }`}
           >
             <User size={16} /> Patient
           </button>
@@ -234,11 +246,10 @@ function RegisterForm() {
               setRole('DOCTOR');
               setMessage('');
             }}
-            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition cursor-pointer select-none ${
-              role === 'DOCTOR'
-                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20 font-bold'
-                : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
-            }`}
+            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition cursor-pointer select-none ${role === 'DOCTOR'
+              ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20 font-bold'
+              : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
+              }`}
           >
             <Stethoscope size={16} /> Doctor
           </button>
@@ -250,11 +261,10 @@ function RegisterForm() {
               setRole('STAFF');
               setMessage('');
             }}
-            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition cursor-pointer select-none ${
-              role === 'STAFF'
-                ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20 font-bold'
-                : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
-            }`}
+            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition cursor-pointer select-none ${role === 'STAFF'
+              ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20 font-bold'
+              : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
+              }`}
           >
             <Briefcase size={16} /> Staff
           </button>
@@ -266,11 +276,10 @@ function RegisterForm() {
               setRole('SUPER_ADMIN');
               setMessage('');
             }}
-            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition cursor-pointer select-none ${
-              role === 'SUPER_ADMIN'
-                ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20 font-bold'
-                : 'text-amber-300/80 hover:text-amber-200 hover:bg-amber-400/10'
-            }`}
+            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition cursor-pointer select-none ${role === 'SUPER_ADMIN'
+              ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20 font-bold'
+              : 'text-amber-300/80 hover:text-amber-200 hover:bg-amber-400/10'
+              }`}
           >
             <ShieldCheck size={16} /> Super Admin
           </button>
@@ -362,11 +371,10 @@ function RegisterForm() {
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   title={showPassword ? 'Hide password' : 'Show password'}
                   onClick={toggleShowPassword}
-                  className={`absolute right-2.5 top-1/2 -translate-y-1/2 z-30 cursor-pointer rounded-lg p-2 transition select-none ${
-                    showPassword
-                      ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40 shadow-sm'
-                      : 'text-slate-300 hover:text-cyan-300 hover:bg-white/[0.1]'
-                  }`}
+                  className={`absolute right-2.5 top-1/2 -translate-y-1/2 z-30 cursor-pointer rounded-lg p-2 transition select-none ${showPassword
+                    ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40 shadow-sm'
+                    : 'text-slate-300 hover:text-cyan-300 hover:bg-white/[0.1]'
+                    }`}
                 >
                   {showPassword ? <EyeOff size={20} className="pointer-events-none" /> : <Eye size={20} className="pointer-events-none" />}
                 </button>
@@ -557,7 +565,7 @@ function RegisterForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 font-bold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 cursor-pointer"
+              className="glass-btn-primary flex items-center justify-center gap-2 rounded-xl px-4 py-3.5 font-bold text-slate-950 transition disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 cursor-pointer shadow-lg shadow-cyan-400/20"
             >
               {isLoading ? 'Creating account...' : `Create ${role.toLowerCase()} account`}{' '}
               {!isLoading && <ArrowRight size={18} />}

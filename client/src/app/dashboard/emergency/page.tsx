@@ -157,16 +157,16 @@ export default function EmergencyPage() {
   const activeCount = cases.filter((c) => c.status === 'Under Treatment' || c.status === 'Admitted').length;
 
   return (
-    <section className="max-w-7xl">
+    <section className="max-w-7xl space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-gray-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-4">
         <div className="flex items-center gap-3">
-          <span className="p-2 rounded-xl bg-rose-100 text-rose-700">
-            <Siren size={24} />
+          <span className="p-2.5 rounded-xl bg-rose-500/20 border border-rose-400/30 text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.3)]">
+            <Siren size={24} className="animate-pulse" />
           </span>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Emergency Ward</h1>
-            <p className="text-sm text-gray-500">Triage, priority tracking, and emergency admission intake.</p>
+            <h1 className="text-2xl font-black text-white tracking-tight">Emergency Ward</h1>
+            <p className="text-sm text-slate-400 font-light">Triage, priority tracking, and emergency admission intake.</p>
           </div>
         </div>
 
@@ -175,65 +175,65 @@ export default function EmergencyPage() {
             setModalError('');
             setShowModal(true);
           }}
-          className="mt-4 sm:mt-0 inline-flex items-center gap-2 px-4 py-2.5 bg-rose-600 text-white text-sm font-semibold rounded-xl hover:bg-rose-700 transition"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-rose-500 via-rose-600 to-pink-600 hover:from-rose-400 hover:to-rose-500 text-white text-xs font-bold rounded-xl shadow-[0_0_20px_rgba(244,63,94,0.35)] transition cursor-pointer"
         >
-          <Plus size={18} /> Register Emergency Case
+          <Plus size={16} /> Register Emergency Case
         </button>
       </div>
 
       {successMsg && (
-        <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-200 text-sm flex items-center justify-between backdrop-blur-md">
           <span>{successMsg}</span>
-          <button onClick={() => setSuccessMsg('')} className="text-emerald-600 hover:text-emerald-800">
+          <button onClick={() => setSuccessMsg('')} className="text-emerald-400 hover:text-emerald-200 cursor-pointer">
             <X size={16} />
           </button>
         </div>
       )}
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-400/30 text-rose-200 text-sm flex items-center justify-between backdrop-blur-md">
           <span>{error}</span>
-          <button onClick={() => setError('')} className="text-rose-600 hover:text-rose-800">
+          <button onClick={() => setError('')} className="text-rose-400 hover:text-rose-200 cursor-pointer">
             <X size={16} />
           </button>
         </div>
       )}
 
       {/* Summary Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="p-5 rounded-xl border border-rose-200 bg-rose-50/60 shadow-sm">
-          <p className="text-xs uppercase font-bold text-rose-700 flex items-center gap-1.5">
-            <AlertTriangle size={14} /> Critical Cases
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="glass-card-interactive p-5 rounded-2xl border-rose-400/30 shadow-lg">
+          <p className="text-xs uppercase font-bold text-rose-400 flex items-center gap-1.5 tracking-wider">
+            <AlertTriangle size={15} /> Critical Cases
           </p>
-          <p className="mt-1 text-2xl font-bold text-rose-900">{criticalCount}</p>
+          <p className="mt-2 text-3xl font-black text-white">{criticalCount}</p>
         </div>
-        <div className="p-5 rounded-xl border border-amber-200 bg-amber-50/60 shadow-sm">
-          <p className="text-xs uppercase font-bold text-amber-700">High Priority</p>
-          <p className="mt-1 text-2xl font-bold text-amber-900">{highCount}</p>
+        <div className="glass-card-interactive p-5 rounded-2xl border-amber-400/30 shadow-lg">
+          <p className="text-xs uppercase font-bold text-amber-400 tracking-wider">High Priority</p>
+          <p className="mt-2 text-3xl font-black text-white">{highCount}</p>
         </div>
-        <div className="p-5 rounded-xl border border-blue-200 bg-blue-50/60 shadow-sm">
-          <p className="text-xs uppercase font-bold text-blue-700">Under Care</p>
-          <p className="mt-1 text-2xl font-bold text-blue-900">{activeCount}</p>
+        <div className="glass-card-interactive p-5 rounded-2xl border-cyan-400/30 shadow-lg">
+          <p className="text-xs uppercase font-bold text-cyan-400 tracking-wider">Under Care</p>
+          <p className="mt-2 text-3xl font-black text-white">{activeCount}</p>
         </div>
-        <div className="p-5 rounded-xl border border-gray-200 bg-white shadow-sm">
-          <p className="text-xs uppercase font-bold text-gray-500">Waiting for Doctor</p>
-          <p className="mt-1 text-2xl font-bold text-gray-900">{waitingCount}</p>
+        <div className="glass-card-interactive p-5 rounded-2xl border-white/10 shadow-lg">
+          <p className="text-xs uppercase font-bold text-slate-400 tracking-wider">Waiting for Doctor</p>
+          <p className="mt-2 text-3xl font-black text-white">{waitingCount}</p>
         </div>
       </div>
 
       {/* Filter and Cases Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="glass-card rounded-2xl shadow-xl overflow-hidden border-white/10">
+        <div className="p-5 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Registered Emergency Cases</h2>
-            <p className="text-xs text-gray-500">Live triage feed ordered by arrival</p>
+            <h2 className="text-base font-bold text-white">Registered Emergency Cases</h2>
+            <p className="text-xs text-slate-400">Live triage feed ordered by arrival</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <select
               value={selectedPriority}
               onChange={(e) => setSelectedPriority(e.target.value)}
-              className="text-xs font-medium border border-gray-300 rounded-lg px-3 py-2 bg-white outline-none focus:border-cyan-500"
+              className="glass-pill text-xs font-semibold rounded-xl px-3.5 py-2 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900 border border-white/10"
             >
               <option value="ALL">All Priorities</option>
               <option value="Critical">Critical</option>
@@ -245,7 +245,7 @@ export default function EmergencyPage() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="text-xs font-medium border border-gray-300 rounded-lg px-3 py-2 bg-white outline-none focus:border-cyan-500"
+              className="glass-pill text-xs font-semibold rounded-xl px-3.5 py-2 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900 border border-white/10"
             >
               <option value="ALL">All Statuses</option>
               <option value="Waiting">Waiting</option>
@@ -258,91 +258,106 @@ export default function EmergencyPage() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full text-left text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wide text-gray-500">
+          <table className="min-w-full text-left text-sm text-slate-300">
+            <thead className="bg-white/[0.04] border-b border-white/10 text-xs uppercase tracking-wider text-slate-400">
               <tr>
-                <th className="px-5 py-3">Case ID</th>
-                <th className="px-5 py-3">Patient Name</th>
-                <th className="px-5 py-3">Emergency Type</th>
-                <th className="px-5 py-3">Priority</th>
-                <th className="px-5 py-3">Arrival Time</th>
-                <th className="px-5 py-3">Assigned Doctor</th>
-                <th className="px-5 py-3">Bed</th>
-                <th className="px-5 py-3">Status</th>
+                <th className="px-5 py-4">Case ID</th>
+                <th className="px-5 py-4">Patient Name</th>
+                <th className="px-5 py-4">Emergency Type</th>
+                <th className="px-5 py-4">Priority</th>
+                <th className="px-5 py-4">Arrival Time</th>
+                <th className="px-5 py-4">Assigned Doctor</th>
+                <th className="px-5 py-4">Bed</th>
+                <th className="px-5 py-4">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-white/5">
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-8 text-center text-sm text-gray-500">
+                  <td colSpan={8} className="px-5 py-10 text-center text-sm text-slate-400">
                     Loading emergency records...
                   </td>
                 </tr>
               ) : filteredCases.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-8 text-center text-sm text-gray-500">
+                  <td colSpan={8} className="px-5 py-12 text-center text-sm text-slate-400">
                     No emergency cases match the criteria.
                   </td>
                 </tr>
               ) : (
                 filteredCases.map((c) => {
                   const priorityColors = {
-                    Critical: 'bg-rose-100 text-rose-800 border-rose-300',
-                    High: 'bg-amber-100 text-amber-800 border-amber-300',
-                    Medium: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-                    Low: 'bg-blue-100 text-blue-800 border-blue-300',
+                    Critical: 'bg-rose-500/20 text-rose-300 border-rose-400/40 shadow-[0_0_10px_rgba(244,63,94,0.3)] animate-pulse',
+                    High: 'bg-amber-500/20 text-amber-300 border-amber-400/40 shadow-[0_0_8px_rgba(245,158,11,0.2)]',
+                    Medium: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/40',
+                    Low: 'bg-blue-500/20 text-blue-300 border-blue-400/40',
                   };
 
                   return (
-                    <tr key={c._id} className="hover:bg-gray-50/60">
-                      <td className="px-5 py-4 font-semibold text-gray-900">{c.caseId}</td>
-                      <td className="px-5 py-4 font-medium text-gray-900">{c.patientName}</td>
-                      <td className="px-5 py-4 text-gray-700">
-                        <p className="font-medium">{c.emergencyType}</p>
+                    <tr key={c._id} className="hover:bg-white/[0.04] transition">
+                      <td className="px-5 py-4 font-mono font-bold text-white">{c.caseId}</td>
+                      <td className="px-5 py-4 font-bold text-white">{c.patientName}</td>
+                      <td className="px-5 py-4 text-slate-300">
+                        <p className="font-semibold text-white">{c.emergencyType}</p>
                         {c.symptoms && c.symptoms.length > 0 && (
-                          <p className="text-xs text-gray-400 truncate max-w-xs">
+                          <p className="text-xs text-slate-400 truncate max-w-xs mt-0.5">
                             {c.symptoms.join(', ')}
                           </p>
                         )}
                       </td>
                       <td className="px-5 py-4">
                         <span
-                          className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
-                            priorityColors[c.priority] || 'bg-gray-100 text-gray-800'
+                          className={`text-xs font-bold px-3 py-1 rounded-full border ${
+                            priorityColors[c.priority] || 'bg-slate-500/20 text-slate-300 border-slate-400/30'
                           }`}
                         >
                           {c.priority}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-gray-600 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5 text-xs">
-                          <Clock size={13} className="text-gray-400" />
+                      <td className="px-5 py-4 text-slate-400 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 text-xs font-mono">
+                          <Clock size={13} className="text-cyan-400" />
                           {new Date(c.arrivalTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          <span className="text-gray-400 text-[11px]">
+                          <span className="text-slate-500 text-[11px]">
                             ({new Date(c.arrivalTime).toLocaleDateString()})
                           </span>
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-gray-700">
+                      <td className="px-5 py-4 text-slate-300">
                         {c.doctor?.name ? (
-                          <span className="flex items-center gap-1.5 text-xs font-medium text-gray-900">
-                            <User size={13} className="text-gray-400" /> {c.doctor.name}
+                          <span className="flex items-center gap-1.5 text-xs font-semibold text-white">
+                            <User size={13} className="text-cyan-400" /> {c.doctor.name}
                           </span>
                         ) : (
-                          <span className="text-xs text-gray-400 italic">Unassigned</span>
+                          <span className="text-xs text-slate-500 italic">Unassigned</span>
                         )}
                       </td>
-                      <td className="px-5 py-4 text-gray-700">
+                      <td className="px-5 py-4 text-slate-300">
                         {c.bed?.bedNumber ? (
-                          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-cyan-50 text-cyan-700">
+                          <span className="glass-pill text-xs font-mono font-bold px-2.5 py-1 text-cyan-300 border border-cyan-400/30 rounded-lg">
                             {c.bed.bedNumber}
                           </span>
                         ) : (
-                          <span className="text-xs text-gray-400 italic">None</span>
+                          <span className="text-xs text-slate-500 italic">None</span>
                         )}
                       </td>
                       <td className="px-5 py-4">
-                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-800">
+                        <span
+                          className={`text-xs font-bold px-3.5 py-1 rounded-full border inline-flex items-center gap-1.5 shadow-sm ${
+                            c.status === 'Waiting'
+                              ? 'bg-amber-500/25 text-amber-300 border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.35)]'
+                              : c.status === 'Under Treatment'
+                              ? 'bg-cyan-500/25 text-cyan-300 border-cyan-400/50 shadow-[0_0_12px_rgba(34,211,238,0.35)] animate-pulse'
+                              : c.status === 'Admitted'
+                              ? 'bg-purple-500/25 text-purple-300 border-purple-400/50 shadow-[0_0_12px_rgba(192,132,252,0.35)]'
+                              : c.status === 'Discharged'
+                              ? 'bg-emerald-500/25 text-emerald-300 border-emerald-400/50 shadow-[0_0_12px_rgba(52,211,153,0.35)]'
+                              : c.status === 'Completed'
+                              ? 'bg-blue-500/25 text-blue-300 border-blue-400/50 shadow-[0_0_12px_rgba(96,165,250,0.35)]'
+                              : 'bg-slate-700/50 text-slate-200 border-slate-500/40'
+                          }`}
+                        >
+                          <span className="h-1.5 w-1.5 rounded-full bg-current shadow-[0_0_6px_currentColor]" />
                           {c.status}
                         </span>
                       </td>
@@ -357,51 +372,51 @@ export default function EmergencyPage() {
 
       {/* Register Emergency Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <Siren className="text-rose-600" size={20} /> Register Emergency Case
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="glass-card rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative border-white/15">
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Siren className="text-rose-400 animate-pulse" size={20} /> Register Emergency Case
               </h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-white transition cursor-pointer">
                 <X size={20} />
               </button>
             </div>
 
             {modalError && (
-              <p className="mb-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+              <p className="mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-200 text-xs font-medium">
                 {modalError}
               </p>
             )}
 
             <form onSubmit={handleRegister} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Patient Name</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Patient Name</label>
                 <input
                   type="text"
                   value={form.patientName}
                   onChange={(e) => setForm({ ...form, patientName: e.target.value })}
                   placeholder="e.g. John Doe"
-                  className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                  className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none placeholder:text-slate-500"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Emergency Type</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Emergency Type</label>
                   <input
                     type="text"
                     value={form.emergencyType}
                     onChange={(e) => setForm({ ...form, emergencyType: e.target.value })}
                     placeholder="e.g. Acute Trauma / Cardiac"
-                    className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                    className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none placeholder:text-slate-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Triage Priority</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Triage Priority</label>
                   <select
                     value={form.priority}
                     onChange={(e) => {
@@ -410,7 +425,7 @@ export default function EmergencyPage() {
                         setForm({ ...form, priority });
                       }
                     }}
-                    className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                    className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
                   >
                     <option value="Critical">Critical (Immediate)</option>
                     <option value="High">High (Urgent)</option>
@@ -421,7 +436,7 @@ export default function EmergencyPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Symptoms (comma-separated)
                 </label>
                 <input
@@ -429,17 +444,17 @@ export default function EmergencyPage() {
                   value={form.symptomsInput}
                   onChange={(e) => setForm({ ...form, symptomsInput: e.target.value })}
                   placeholder="Severe chest pain, Dyspnea, Diaphoresis"
-                  className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                  className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none placeholder:text-slate-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Assign Doctor (Optional)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Assign Doctor (Optional)</label>
                   <select
                     value={form.doctorId}
                     onChange={(e) => setForm({ ...form, doctorId: e.target.value })}
-                    className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                    className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
                   >
                     <option value="">-- None --</option>
                     {doctors.map((d) => (
@@ -451,11 +466,11 @@ export default function EmergencyPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Assign Bed (Optional)</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Assign Bed (Optional)</label>
                   <select
                     value={form.bedId}
                     onChange={(e) => setForm({ ...form, bedId: e.target.value })}
-                    className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                    className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
                   >
                     <option value="">-- None --</option>
                     {availableBeds.map((b) => (
@@ -467,18 +482,18 @@ export default function EmergencyPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-3">
+              <div className="flex justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white glass-pill rounded-xl transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 text-sm font-semibold bg-rose-600 text-white rounded-xl hover:bg-rose-700 transition disabled:opacity-50"
+                  className="px-5 py-2 text-xs font-bold bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-xl hover:from-rose-400 hover:to-pink-500 transition shadow-[0_0_15px_rgba(244,63,94,0.35)] disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? 'Registering...' : 'Register Case'}
                 </button>

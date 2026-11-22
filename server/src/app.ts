@@ -56,8 +56,13 @@ app.use(compression());
 // Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window`
-  message: 'Too many requests from this IP, please try again later.',
+  max: process.env.NODE_ENV === 'production' ? 500 : 10000, // Safe threshold in dev/local testing
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again in a few minutes.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use('/api', limiter);
 

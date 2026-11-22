@@ -167,17 +167,17 @@ export default function BedsPage() {
   const icuBedsCount = beds.filter((b) => b.type === 'ICU').length;
 
   return (
-    <section className="max-w-7xl">
+    <section className="max-w-7xl space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-gray-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <span className="p-2 rounded-xl bg-cyan-100 text-cyan-700">
+            <span className="p-2.5 rounded-xl bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
               <BedIcon size={24} />
             </span>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Bed Management</h1>
-              <p className="text-sm text-gray-500">Monitor ward capacity, assign beds, and manage discharges.</p>
+              <h1 className="text-2xl font-black text-white tracking-tight">Bed Management</h1>
+              <p className="text-sm text-slate-400 font-light">Monitor ward capacity, assign beds, and manage discharges.</p>
             </div>
           </div>
         </div>
@@ -187,79 +187,79 @@ export default function BedsPage() {
             setModalError('');
             setShowAdmitModal(true);
           }}
-          className="mt-4 sm:mt-0 inline-flex items-center gap-2 px-4 py-2.5 bg-cyan-600 text-white text-sm font-semibold rounded-xl hover:bg-cyan-700 transition"
+          className="glass-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-slate-950 text-xs font-bold rounded-xl transition cursor-pointer shadow-lg"
         >
-          <Plus size={18} /> Admit Patient
+          <Plus size={16} /> Admit Patient
         </button>
       </div>
 
       {successMsg && (
-        <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-200 text-sm flex items-center justify-between backdrop-blur-md">
           <span>{successMsg}</span>
-          <button onClick={() => setSuccessMsg('')} className="text-emerald-600 hover:text-emerald-800">
+          <button onClick={() => setSuccessMsg('')} className="text-emerald-400 hover:text-emerald-200 cursor-pointer">
             <X size={16} />
           </button>
         </div>
       )}
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-400/30 text-rose-200 text-sm flex items-center justify-between backdrop-blur-md">
           <span>{error}</span>
-          <button onClick={() => setError('')} className="text-rose-600 hover:text-rose-800">
+          <button onClick={() => setError('')} className="text-rose-400 hover:text-rose-200 cursor-pointer">
             <X size={16} />
           </button>
         </div>
       )}
 
       {/* Summary Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="p-5 rounded-xl border border-gray-100 bg-white shadow-sm">
-          <p className="text-xs uppercase font-bold text-gray-400">Total Capacity</p>
-          <p className="mt-1 text-2xl font-bold text-gray-900">{totalBedsCount}</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="glass-card-interactive p-5 rounded-2xl border-white/10 shadow-lg">
+          <p className="text-xs uppercase font-bold text-slate-400 tracking-wider">Total Capacity</p>
+          <p className="mt-2 text-3xl font-black text-white">{totalBedsCount}</p>
         </div>
-        <div className="p-5 rounded-xl border border-emerald-100 bg-emerald-50/50 shadow-sm">
-          <p className="text-xs uppercase font-bold text-emerald-600">Available Beds</p>
-          <p className="mt-1 text-2xl font-bold text-emerald-700">{availableBedsCount}</p>
+        <div className="glass-card-interactive p-5 rounded-2xl border-emerald-400/30 shadow-lg">
+          <p className="text-xs uppercase font-bold text-emerald-400 tracking-wider">Available Beds</p>
+          <p className="mt-2 text-3xl font-black text-emerald-300">{availableBedsCount}</p>
         </div>
-        <div className="p-5 rounded-xl border border-rose-100 bg-rose-50/50 shadow-sm">
-          <p className="text-xs uppercase font-bold text-rose-600">Occupied Beds</p>
-          <p className="mt-1 text-2xl font-bold text-rose-700">{occupiedBedsCount}</p>
+        <div className="glass-card-interactive p-5 rounded-2xl border-rose-400/30 shadow-lg">
+          <p className="text-xs uppercase font-bold text-rose-400 tracking-wider">Occupied Beds</p>
+          <p className="mt-2 text-3xl font-black text-rose-300">{occupiedBedsCount}</p>
         </div>
-        <div className="p-5 rounded-xl border border-purple-100 bg-purple-50/50 shadow-sm">
-          <p className="text-xs uppercase font-bold text-purple-600">ICU Capacity</p>
-          <p className="mt-1 text-2xl font-bold text-purple-700">{icuBedsCount}</p>
+        <div className="glass-card-interactive p-5 rounded-2xl border-purple-400/30 shadow-lg">
+          <p className="text-xs uppercase font-bold text-purple-400 tracking-wider">ICU Capacity</p>
+          <p className="mt-2 text-3xl font-black text-purple-300">{icuBedsCount}</p>
         </div>
       </div>
 
       {/* Active Admissions Section */}
-      <div className="mb-10 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+      <div className="glass-card rounded-2xl shadow-xl overflow-hidden border-white/10">
+        <div className="p-5 border-b border-white/10 flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Active Admissions</h2>
-            <p className="text-xs text-gray-500">Currently admitted in-patients</p>
+            <h2 className="text-base font-bold text-white">Active Admissions</h2>
+            <p className="text-xs text-slate-400">Currently admitted in-patients</p>
           </div>
-          <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-cyan-100 text-cyan-800">
+          <span className="text-xs px-3 py-1 rounded-full font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-sm">
             {admissions.filter((a) => a.status === 'Active').length} Active
           </span>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full text-left text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wide text-gray-500">
+          <table className="min-w-full text-left text-sm text-slate-300">
+            <thead className="border-b border-white/10 bg-white/[0.04] text-xs uppercase tracking-wider text-slate-400">
               <tr>
-                <th className="px-5 py-3">Admission ID</th>
-                <th className="px-5 py-3">Patient</th>
-                <th className="px-5 py-3">Attending Doctor</th>
-                <th className="px-5 py-3">Ward & Bed</th>
-                <th className="px-5 py-3">Admission Date</th>
-                <th className="px-5 py-3">Reason</th>
-                <th className="px-5 py-3 text-right">Action</th>
+                <th className="px-5 py-4">Admission ID</th>
+                <th className="px-5 py-4">Patient</th>
+                <th className="px-5 py-4">Attending Doctor</th>
+                <th className="px-5 py-4">Ward & Bed</th>
+                <th className="px-5 py-4">Admission Date</th>
+                <th className="px-5 py-4">Reason</th>
+                <th className="px-5 py-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-white/5">
               {admissions.filter((a) => a.status === 'Active').length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-8 text-center text-sm text-gray-500">
+                  <td colSpan={7} className="px-5 py-8 text-center text-sm text-slate-400">
                     No active admissions at this moment.
                   </td>
                 </tr>
@@ -267,27 +267,27 @@ export default function BedsPage() {
                 admissions
                   .filter((a) => a.status === 'Active')
                   .map((adm) => (
-                    <tr key={adm._id} className="hover:bg-gray-50/60">
-                      <td className="px-5 py-4 font-semibold text-gray-900">{adm.admissionId}</td>
+                    <tr key={adm._id} className="hover:bg-white/[0.04] transition">
+                      <td className="px-5 py-4 font-mono font-bold text-white">{adm.admissionId}</td>
                       <td className="px-5 py-4">
-                        <p className="font-medium text-gray-900">{adm.patient?.name || 'Patient'}</p>
-                        <p className="text-xs text-gray-400">{adm.patient?.patientId}</p>
+                        <p className="font-semibold text-white">{adm.patient?.name || 'Patient'}</p>
+                        <p className="text-xs text-slate-400 font-mono">{adm.patient?.patientId}</p>
                       </td>
-                      <td className="px-5 py-4 text-gray-700">{adm.doctor?.name || 'Assigned Doctor'}</td>
-                      <td className="px-5 py-4 text-gray-700">
-                        <span className="font-medium">{adm.ward?.name}</span>
-                        <span className="ml-2 text-xs text-cyan-700 font-semibold bg-cyan-50 px-2 py-0.5 rounded">
+                      <td className="px-5 py-4 text-slate-300">{adm.doctor?.name || 'Assigned Doctor'}</td>
+                      <td className="px-5 py-4">
+                        <span className="font-medium text-slate-200">{adm.ward?.name}</span>
+                        <span className="ml-2 text-xs text-cyan-300 font-mono font-bold glass-pill px-2.5 py-0.5 rounded-lg border border-cyan-400/30">
                           {adm.bed?.bedNumber}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-gray-700 whitespace-nowrap">
+                      <td className="px-5 py-4 text-slate-400 whitespace-nowrap font-mono text-xs">
                         {new Date(adm.admissionDate).toLocaleDateString()}
                       </td>
-                      <td className="px-5 py-4 text-gray-600 max-w-xs truncate">{adm.reason}</td>
+                      <td className="px-5 py-4 text-slate-300 max-w-xs truncate">{adm.reason}</td>
                       <td className="px-5 py-4 text-right">
                         <button
                           onClick={() => handleDischarge(adm._id)}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 transition"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-400/30 transition cursor-pointer"
                         >
                           <LogOut size={14} /> Discharge
                         </button>
@@ -301,22 +301,22 @@ export default function BedsPage() {
       </div>
 
       {/* Bed Grid & Filter Section */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="glass-card rounded-2xl shadow-xl overflow-hidden p-6 border-white/10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Hospital Beds Status</h2>
-            <p className="text-xs text-gray-500">Real-time status of all hospital beds by ward</p>
+            <h2 className="text-base font-bold text-white">Hospital Beds Status</h2>
+            <p className="text-xs text-slate-400">Real-time status of all hospital beds by ward</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Filter size={16} />
+            <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
+              <Filter size={14} className="text-cyan-400" />
               <span>Filter:</span>
             </div>
             <select
               value={selectedWard}
               onChange={(e) => setSelectedWard(e.target.value)}
-              className="text-xs font-medium border border-gray-300 rounded-lg px-3 py-2 bg-white outline-none focus:border-cyan-500"
+              className="glass-pill text-xs font-semibold rounded-xl px-3.5 py-2 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900 border border-white/10"
             >
               <option value="ALL">All Wards</option>
               {wards.map((w) => (
@@ -329,7 +329,7 @@ export default function BedsPage() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="text-xs font-medium border border-gray-300 rounded-lg px-3 py-2 bg-white outline-none focus:border-cyan-500"
+              className="glass-pill text-xs font-semibold rounded-xl px-3.5 py-2 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900 border border-white/10"
             >
               <option value="ALL">All Statuses</option>
               <option value="Available">Available</option>
@@ -341,39 +341,51 @@ export default function BedsPage() {
         </div>
 
         {isLoading ? (
-          <p className="text-center py-12 text-sm text-gray-500">Loading beds...</p>
+          <p className="text-center py-12 text-sm text-slate-400">Loading beds...</p>
         ) : filteredBeds.length === 0 ? (
-          <p className="text-center py-12 text-sm text-gray-500">No beds match your filter.</p>
+          <p className="text-center py-12 text-sm text-slate-400">No beds match your filter.</p>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {filteredBeds.map((bed) => {
               const isAvailable = bed.status === 'Available';
+              const isOccupied = bed.status === 'Occupied';
+              const isReserved = bed.status === 'Reserved';
+
+              const bedBorder = isAvailable
+                ? 'border-emerald-400/35 hover:border-emerald-400/60'
+                : isOccupied
+                ? 'border-rose-400/35 hover:border-rose-400/60'
+                : isReserved
+                ? 'border-amber-400/35 hover:border-amber-400/60'
+                : 'border-slate-500/35';
+
+              const badgeColor = isAvailable
+                ? 'bg-emerald-500/25 text-emerald-300 border-emerald-400/50 shadow-[0_0_8px_rgba(52,211,153,0.3)]'
+                : isOccupied
+                ? 'bg-rose-500/25 text-rose-300 border-rose-400/50 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
+                : isReserved
+                ? 'bg-amber-500/25 text-amber-300 border-amber-400/50 shadow-[0_0_8px_rgba(251,191,36,0.3)]'
+                : 'bg-slate-600/30 text-slate-300 border-slate-500/40';
+
               return (
                 <div
                   key={bed._id}
-                  className={`p-4 rounded-xl border transition ${
-                    isAvailable
-                      ? 'border-emerald-200 bg-emerald-50/40'
-                      : 'border-rose-200 bg-rose-50/40'
-                  }`}
+                  className={`glass-card-interactive p-4 rounded-2xl border transition shadow-md ${bedBorder}`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-gray-900 text-sm">{bed.bedNumber}</span>
+                    <span className="font-mono font-bold text-white text-sm">{bed.bedNumber}</span>
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        isAvailable
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : 'bg-rose-100 text-rose-800'
-                      }`}
+                      className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border shadow-sm ${badgeColor}`}
                     >
+                      <span className="h-1.5 w-1.5 rounded-full bg-current" />
                       {bed.status}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500">{bed.ward?.name || 'General Ward'}</p>
-                  <p className="text-[11px] font-semibold text-gray-400 mt-0.5">{bed.type} Bed</p>
+                  <p className="text-xs text-slate-400">{bed.ward?.name || 'General Ward'}</p>
+                  <p className="text-[11px] font-semibold text-cyan-300 mt-0.5">{bed.type} Bed</p>
                   {bed.currentPatient && (
-                    <div className="mt-2 pt-2 border-t border-gray-200 text-xs">
-                      <p className="font-medium text-gray-800 truncate">{bed.currentPatient.name}</p>
+                    <div className="mt-2 pt-2 border-t border-white/10 text-xs">
+                      <p className="font-semibold text-white truncate">{bed.currentPatient.name}</p>
                     </div>
                   )}
                 </div>
@@ -385,28 +397,30 @@ export default function BedsPage() {
 
       {/* Admit Patient Modal */}
       {showAdmitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900">Admit Patient to Bed</h3>
-              <button onClick={() => setShowAdmitModal(false)} className="text-gray-400 hover:text-gray-600">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="glass-card rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative border-white/15">
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <BedIcon className="text-cyan-400" size={20} /> Admit Patient to Bed
+              </h3>
+              <button onClick={() => setShowAdmitModal(false)} className="text-slate-400 hover:text-white transition cursor-pointer">
                 <X size={20} />
               </button>
             </div>
 
             {modalError && (
-              <p className="mb-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+              <p className="mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-200 text-xs font-medium">
                 {modalError}
               </p>
             )}
 
             <form onSubmit={handleAdmitPatient} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Select Patient</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Select Patient</label>
                 <select
                   value={admitForm.patientId}
                   onChange={(e) => setAdmitForm({ ...admitForm, patientId: e.target.value })}
-                  className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2.5 bg-white outline-none focus:border-cyan-500"
+                  className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
                   required
                 >
                   <option value="">-- Choose Patient --</option>
@@ -419,11 +433,11 @@ export default function BedsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Attending Doctor</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Attending Doctor</label>
                 <select
                   value={admitForm.doctorId}
                   onChange={(e) => setAdmitForm({ ...admitForm, doctorId: e.target.value })}
-                  className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2.5 bg-white outline-none focus:border-cyan-500"
+                  className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
                   required
                 >
                   <option value="">-- Choose Doctor --</option>
@@ -437,11 +451,11 @@ export default function BedsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Ward</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Ward</label>
                   <select
                     value={admitForm.wardId}
                     onChange={(e) => setAdmitForm({ ...admitForm, wardId: e.target.value, bedId: '' })}
-                    className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2.5 bg-white outline-none focus:border-cyan-500"
+                    className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
                     required
                   >
                     <option value="">-- Select Ward --</option>
@@ -454,11 +468,11 @@ export default function BedsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Available Bed</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Available Bed</label>
                   <select
                     value={admitForm.bedId}
                     onChange={(e) => setAdmitForm({ ...admitForm, bedId: e.target.value })}
-                    className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2.5 bg-white outline-none focus:border-cyan-500"
+                    className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none cursor-pointer [color-scheme:dark] [&>option]:bg-slate-900"
                     required
                   >
                     <option value="">-- Select Bed --</option>
@@ -472,29 +486,29 @@ export default function BedsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Reason for Admission</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Reason for Admission</label>
                 <textarea
                   value={admitForm.reason}
                   onChange={(e) => setAdmitForm({ ...admitForm, reason: e.target.value })}
                   placeholder="Clinical reason for admission..."
                   rows={3}
-                  className="w-full text-sm border border-gray-300 rounded-xl px-3 py-2 bg-white outline-none focus:border-cyan-500"
+                  className="glass-input w-full text-sm rounded-xl px-3.5 py-2.5 text-white outline-none placeholder:text-slate-500"
                   required
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3">
+              <div className="flex justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowAdmitModal(false)}
-                  className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white glass-pill rounded-xl transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 text-sm font-semibold bg-cyan-600 text-white rounded-xl hover:bg-cyan-700 transition disabled:opacity-50"
+                  className="glass-btn-primary px-5 py-2 text-xs font-bold text-slate-950 rounded-xl transition disabled:opacity-50 cursor-pointer shadow-lg"
                 >
                   {isSubmitting ? 'Admitting...' : 'Confirm Admission'}
                 </button>

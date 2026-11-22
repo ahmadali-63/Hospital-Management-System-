@@ -91,8 +91,15 @@ function LoginForm() {
         router.push('/dashboard');
       }
     } catch (error) {
-      const resp = (error as AxiosError<{ message?: string }>).response;
-      setMessage(resp?.data?.message || 'Unable to log in. Please check your credentials.');
+      const resp = (error as AxiosError<{ message?: string; errors?: Array<{ message?: string }> }>).response;
+      const rawData = resp?.data as any;
+      const errText =
+        typeof rawData === 'string'
+          ? rawData
+          : rawData?.errors?.[0]?.message ||
+          rawData?.message ||
+          'Unable to log in. Please check your credentials.';
+      setMessage(errText);
     } finally {
       setIsLoading(false);
     }
@@ -185,23 +192,24 @@ function LoginForm() {
   }
 
   return (
-    <main className="neon-page neon-grid relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-12 text-white">
-      {/* Background Orbs with pointer-events-none */}
-      <div className="neon-orb absolute -left-24 top-12 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl pointer-events-none" />
-      <div className="neon-orb absolute -right-20 bottom-10 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl pointer-events-none" />
-
-      <section className="neon-rise relative w-full max-w-md rounded-3xl border border-white/20 bg-white/[0.08] p-8 shadow-[0_0_70px_rgba(34,211,238,0.16),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl sm:p-10 z-10">
-        <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-[0.2em] text-cyan-300">
-          <HeartPulse size={20} /> CARENOVA
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-12 text-white bg-transparent">
+      <section className="glass-card neon-rise relative w-full max-w-md rounded-3xl p-8 backdrop-blur-2xl sm:p-10 z-10 border-white/15">
+        <Link href="/" className="flex items-center gap-2.5 text-sm font-bold tracking-[0.2em] text-cyan-300 group">
+          <div className="p-1.5 rounded-lg bg-cyan-400/20 border border-cyan-400/30 text-cyan-300 group-hover:scale-105 transition">
+            <HeartPulse size={18} className="animate-pulse" />
+          </div>
+          <span>CARENOVA</span>
         </Link>
 
         {/* Normal Login View */}
         {!isForgotMode ? (
           <>
             <div className="mt-8">
-              <p className="text-sm font-medium text-fuchsia-300">Unified Portal Access</p>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight">Welcome back.</h1>
-              <p className="mt-2 text-sm leading-6 text-slate-400">
+              <span className="inline-block px-3 py-1 rounded-full bg-fuchsia-400/15 border border-fuchsia-400/30 text-xs font-semibold text-fuchsia-300">
+                Unified Portal Access
+              </span>
+              <h1 className="mt-3 text-3xl font-extrabold tracking-tight">Welcome back.</h1>
+              <p className="mt-2 text-sm leading-6 text-slate-300 font-light">
                 Log in to continue managing care with confidence.
               </p>
             </div>
@@ -218,7 +226,7 @@ function LoginForm() {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="name@example.com"
-                  className="mt-2 w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20"
+                  className="glass-input mt-2 w-full rounded-xl px-4 py-3 text-white outline-none placeholder:text-slate-500"
                   required
                 />
               </div>
@@ -259,7 +267,7 @@ function LoginForm() {
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     placeholder="Enter your password"
-                    className="w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 pr-12 text-white outline-none shadow-inner shadow-white/[0.03] backdrop-blur-md transition placeholder:text-slate-500 focus:border-cyan-300 focus:bg-cyan-300/[0.08] focus:ring-2 focus:ring-cyan-300/20"
+                    className="glass-input w-full rounded-xl px-4 py-3 pr-12 text-white outline-none placeholder:text-slate-500"
                     required
                   />
                   <button
@@ -267,11 +275,10 @@ function LoginForm() {
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                     title={showPassword ? 'Hide password' : 'Show password'}
                     onClick={toggleShowPassword}
-                    className={`absolute right-2.5 top-1/2 -translate-y-1/2 z-30 cursor-pointer rounded-lg p-2 transition select-none ${
-                      showPassword
-                        ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40 shadow-sm'
-                        : 'text-slate-300 hover:text-cyan-300 hover:bg-white/[0.1]'
-                    }`}
+                    className={`absolute right-2.5 top-1/2 -translate-y-1/2 z-30 cursor-pointer rounded-lg p-2 transition select-none ${showPassword
+                      ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40 shadow-sm'
+                      : 'text-slate-300 hover:text-cyan-300 hover:bg-white/[0.1]'
+                      }`}
                   >
                     {showPassword ? (
                       <EyeOff size={20} className="pointer-events-none" />
@@ -283,7 +290,7 @@ function LoginForm() {
 
                 {/* Plain-text display when password visibility is active */}
                 {showPassword && password && (
-                  <div className="mt-2 flex items-center justify-between rounded-lg border border-cyan-500/30 bg-cyan-950/40 px-3 py-1.5 text-xs text-cyan-200">
+                  <div className="mt-2 flex items-center justify-between rounded-xl border border-cyan-500/30 bg-cyan-950/60 backdrop-blur-md px-3.5 py-2 text-xs text-cyan-200 shadow-inner">
                     <span className="font-semibold text-cyan-400">Password preview:</span>
                     <span className="font-mono select-all text-white font-bold">{password}</span>
                   </div>
@@ -291,15 +298,15 @@ function LoginForm() {
               </div>
 
               {message && (
-                <div role="alert" className="flex items-center gap-2 rounded-lg border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-200">
-                  <AlertCircle size={16} className="shrink-0" />
+                <div role="alert" className="flex items-center gap-2 rounded-xl border border-rose-400/30 bg-rose-500/15 backdrop-blur-md px-3.5 py-2.5 text-sm text-rose-200">
+                  <AlertCircle size={16} className="shrink-0 text-rose-400" />
                   <span>{message}</span>
                 </div>
               )}
 
               {successMessage && (
-                <div className="flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-200">
-                  <CheckCircle2 size={16} className="shrink-0" />
+                <div className="flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-500/15 backdrop-blur-md px-3.5 py-2.5 text-sm text-emerald-200">
+                  <CheckCircle2 size={16} className="shrink-0 text-emerald-400" />
                   <span>{successMessage}</span>
                 </div>
               )}
@@ -307,7 +314,7 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 font-bold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+                className="glass-btn-primary flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 font-bold text-slate-950 transition disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
               >
                 {isLoading ? 'Logging in...' : 'Log in'} {!isLoading && <ArrowRight size={18} />}
               </button>
@@ -315,7 +322,7 @@ function LoginForm() {
 
             {/* Quick One-Click Role Logins */}
             <div className="mt-6 pt-5 border-t border-white/10">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5">
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
                 Quick 1-Click Role Logins:
               </p>
               <div className="grid grid-cols-2 gap-2">
@@ -323,7 +330,7 @@ function LoginForm() {
                   type="button"
                   onClick={() => handleQuickLogin('SUPER_ADMIN')}
                   disabled={isLoading}
-                  className="flex items-center justify-center gap-1.5 rounded-lg border border-amber-400/40 bg-amber-400/10 px-2.5 py-2 text-xs font-bold text-amber-300 hover:bg-amber-400/20 transition cursor-pointer"
+                  className="glass-pill flex items-center justify-center gap-1.5 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-xs font-bold text-amber-300 hover:bg-amber-400/20 hover:border-amber-400/60 transition cursor-pointer"
                 >
                   <ShieldCheck size={14} /> Super Admin
                 </button>
@@ -331,7 +338,7 @@ function LoginForm() {
                   type="button"
                   onClick={() => handleQuickLogin('DOCTOR')}
                   disabled={isLoading}
-                  className="flex items-center justify-center gap-1.5 rounded-lg border border-emerald-400/40 bg-emerald-400/10 px-2.5 py-2 text-xs font-bold text-emerald-300 hover:bg-emerald-400/20 transition cursor-pointer"
+                  className="glass-pill flex items-center justify-center gap-1.5 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2.5 text-xs font-bold text-emerald-300 hover:bg-emerald-400/20 hover:border-emerald-400/60 transition cursor-pointer"
                 >
                   <Stethoscope size={14} /> Doctor
                 </button>
@@ -339,7 +346,7 @@ function LoginForm() {
                   type="button"
                   onClick={() => handleQuickLogin('STAFF')}
                   disabled={isLoading}
-                  className="flex items-center justify-center gap-1.5 rounded-lg border border-purple-400/40 bg-purple-400/10 px-2.5 py-2 text-xs font-bold text-purple-300 hover:bg-purple-400/20 transition cursor-pointer"
+                  className="glass-pill flex items-center justify-center gap-1.5 rounded-xl border border-purple-400/30 bg-purple-400/10 px-3 py-2.5 text-xs font-bold text-purple-300 hover:bg-purple-400/20 hover:border-purple-400/60 transition cursor-pointer"
                 >
                   <Briefcase size={14} /> Staff
                 </button>
@@ -347,7 +354,7 @@ function LoginForm() {
                   type="button"
                   onClick={() => handleQuickLogin('PATIENT')}
                   disabled={isLoading}
-                  className="flex items-center justify-center gap-1.5 rounded-lg border border-cyan-400/40 bg-cyan-400/10 px-2.5 py-2 text-xs font-bold text-cyan-300 hover:bg-cyan-400/20 transition cursor-pointer"
+                  className="glass-pill flex items-center justify-center gap-1.5 rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2.5 text-xs font-bold text-cyan-300 hover:bg-cyan-400/20 hover:border-cyan-400/60 transition cursor-pointer"
                 >
                   <User size={14} /> Patient
                 </button>
@@ -355,12 +362,12 @@ function LoginForm() {
             </div>
 
             <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-5 text-sm">
-              <span className="text-slate-400">New to CareNova?</span>
+              <span className="text-slate-400 text-xs">New to CareNova?</span>
               <Link
                 href="/auth/register"
-                className="rounded-lg border border-fuchsia-300/50 bg-fuchsia-300/10 px-4 py-2 font-semibold text-fuchsia-200 transition hover:border-fuchsia-200 hover:bg-fuchsia-300/20"
+                className="glass-pill px-4 py-2 rounded-xl text-xs font-semibold text-fuchsia-300 hover:text-white transition"
               >
-                Sign up
+                Create Account
               </Link>
             </div>
           </>
@@ -450,11 +457,10 @@ function LoginForm() {
                     <button
                       type="button"
                       onClick={() => setShowNewPassword((prev) => !prev)}
-                      className={`absolute right-2.5 top-1/2 -translate-y-1/2 z-30 cursor-pointer rounded-lg p-2 transition select-none ${
-                        showNewPassword
-                          ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40 shadow-sm'
-                          : 'text-slate-300 hover:text-cyan-300 hover:bg-white/[0.1]'
-                      }`}
+                      className={`absolute right-2.5 top-1/2 -translate-y-1/2 z-30 cursor-pointer rounded-lg p-2 transition select-none ${showNewPassword
+                        ? 'text-cyan-300 bg-cyan-400/20 border border-cyan-400/40 shadow-sm'
+                        : 'text-slate-300 hover:text-cyan-300 hover:bg-white/[0.1]'
+                        }`}
                     >
                       {showNewPassword ? <EyeOff size={19} className="pointer-events-none" /> : <Eye size={19} className="pointer-events-none" />}
                     </button>

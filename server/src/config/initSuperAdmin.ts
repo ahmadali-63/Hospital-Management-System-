@@ -1,4 +1,6 @@
 import User, { Role } from '../models/User';
+import Doctor from '../models/Doctor';
+import Department from '../models/Department';
 import logger from '../utils/logger';
 
 async function syncAccount(
@@ -13,7 +15,7 @@ async function syncAccount(
     let user = await User.findOne({ email: normalizedEmail }).select('+password');
 
     if (!user) {
-      await User.create({
+      user = await User.create({
         name,
         email: normalizedEmail,
         password,
@@ -42,6 +44,36 @@ async function syncAccount(
         logger.info(`Updated account credentials: ${normalizedEmail}`);
       }
     }
+
+    // Ensure Doctor document exists for DOCTOR role
+    if (role === Role.DOCTOR && user) {
+      const existingDoc = await Doctor.findOne({ user: user._id });
+      if (!existingDoc) {
+        let dept = await Department.findOne({ isActive: true });
+        if (!dept) {
+          dept = await Department.create({
+            name: department || 'General Medicine',
+            description: `${department || 'General Medicine'} Department`,
+            isActive: true,
+          });
+        }
+        await Doctor.create({
+          user: user._id,
+          name: name.startsWith('Dr.') ? name : `Dr. ${name}`,
+          specialization: department || 'General Medicine',
+          department: dept._id,
+          licenseNumber: 'MD-SYS',
+          qualification: 'MBBS, MD',
+          experience: 8,
+          consultationFee: 1500,
+          workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          workingHours: { start: '09:00', end: '17:00' },
+          status: 'Available',
+          isActive: true,
+        });
+        logger.info(`Created Doctor profile for: ${normalizedEmail}`);
+      }
+    }
   } catch (err: any) {
     logger.warn(`Failed syncing account ${email}: ${err.message}`);
   }
@@ -62,10 +94,17 @@ export async function initSuperAdmin() {
       'Administration'
     );
 
-    // 2. Default Doctor Demo Account
+    // 2. Default Doctor Demo Accounts
     await syncAccount(
       'Dr. Imran Khan',
       'doctor01@hms.com',
+      'doctor123',
+      Role.DOCTOR,
+      'Cardiology'
+    );
+    await syncAccount(
+      'Dr. Abdullah Imran',
+      'abdullah@hms.com',
       'doctor123',
       Role.DOCTOR,
       'Cardiology'

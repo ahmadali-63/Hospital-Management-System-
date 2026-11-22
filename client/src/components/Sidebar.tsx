@@ -115,11 +115,16 @@ export default function Sidebar() {
       : 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
 
   return (
-    <div className="flex flex-col w-64 h-screen bg-slate-900 text-gray-100 flex-shrink-0">
-      <div className="flex items-center justify-between h-16 px-4 border-b border-slate-800">
-        <Link href={homeHref} className="flex items-center gap-2">
-          <HeartPulse className="h-6 w-6 text-cyan-400" />
-          <span className="text-lg font-bold tracking-wide text-white">CareNova</span>
+    <div className="flex flex-col w-64 h-screen bg-slate-950/80 backdrop-blur-2xl border-r border-white/10 text-gray-100 flex-shrink-0 z-20 shadow-2xl">
+      <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
+        <Link href={homeHref} className="flex items-center gap-2 group">
+          <div className="p-1.5 rounded-lg bg-cyan-400/20 border border-cyan-400/30 text-cyan-300 group-hover:scale-105 transition shadow-[0_0_10px_rgba(34,211,238,0.3)]">
+            <HeartPulse className="h-5 w-5 text-cyan-400 animate-pulse" />
+          </div>
+          <div>
+            <span className="text-sm font-extrabold tracking-wider text-white block leading-tight">NEXUS CARE</span>
+            <span className="text-[9px] font-mono tracking-widest text-cyan-300 uppercase block">CARENOVA</span>
+          </div>
         </Link>
         {user?.role && (
           <span className={`text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold ${roleBadgeColor}`}>
@@ -128,8 +133,8 @@ export default function Sidebar() {
         )}
       </div>
 
-      <div className="flex flex-col flex-1 overflow-y-auto">
-        <nav className="flex-1 px-3 py-4 space-y-1">
+      <div className="flex flex-col flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
+        <nav className="flex-1 px-3 py-4 space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isExact = pathname === item.href;
@@ -140,15 +145,15 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors group ${
+                className={`flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-all group ${
                   isActive
-                    ? 'bg-cyan-500/20 text-cyan-300 font-semibold'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-gradient-to-r from-cyan-500/25 to-cyan-500/10 text-cyan-300 font-semibold border border-cyan-400/35 shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                    : 'text-slate-300 hover:bg-white/[0.06] hover:text-white hover:border-white/10 border border-transparent'
                 }`}
               >
                 <Icon
-                  className={`mr-3 h-5 w-5 transition-colors ${
-                    isActive ? 'text-cyan-400' : 'text-slate-400 group-hover:text-cyan-400'
+                  className={`mr-3 h-4 w-4 transition-colors ${
+                    isActive ? 'text-cyan-400 drop-shadow-[0_0_6px_rgba(34,211,238,0.6)]' : 'text-slate-400 group-hover:text-cyan-400'
                   }`}
                 />
                 {item.label}
@@ -158,19 +163,19 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      <div className="flex-shrink-0 p-4 border-t border-slate-800">
+      <div className="flex-shrink-0 p-3 border-t border-white/10 bg-slate-950/40">
         {user && (
-          <div className="mb-3 px-2">
-            <p className="text-sm font-semibold text-white truncate">{user.name}</p>
-            <p className="text-xs text-slate-400 truncate">{user.email}</p>
+          <div className="mb-2 p-2.5 rounded-xl glass-panel-subtle border border-white/10">
+            <p className="text-xs font-bold text-white truncate">{user.name}</p>
+            <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
           </div>
         )}
         <button
           onClick={handleLogout}
-          className="flex items-center w-full px-3 py-2 text-sm font-medium text-slate-400 rounded-lg hover:bg-slate-800 hover:text-rose-400 transition-colors group"
+          className="flex items-center justify-center w-full px-3 py-2 text-xs font-semibold text-rose-300 rounded-xl glass-pill hover:bg-rose-500/20 hover:border-rose-400/40 hover:text-rose-200 transition-all cursor-pointer"
         >
-          <LogOut className="mr-3 h-5 w-5" />
-          Logout
+          <LogOut className="mr-2 h-4 w-4" />
+          Log out
         </button>
       </div>
     </div>

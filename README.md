@@ -122,9 +122,9 @@ npm run dev
 | :--- | :--- | :--- | :--- |
 | **Super Admin** | `superadmin@hms.com` | `superadmin12345` | Full system access, all member controls (`/dashboard/users`, `/dashboard`) |
 | **Hospital Admin** | `admin@hms.com` | `admin123` | Hospital operations, beds, emergency, appointments, billing (`/dashboard`) |
-| **Doctor** | `john@hms.com` | `doctor123` | Consultation schedule, triage cases, clinical workflows (`/dashboard/doctor`) |
-| **Staff** | *(Register via `/auth/register`)* | *(Chosen at sign up)* | Hospital operations, admissions, billing, patients (`/dashboard`) |
-| **Patient** | *(Register via `/auth/register`)* | *(Chosen at sign up)* | Personal visits, prescriptions, medical records, invoices (`/dashboard/patient`) |
+| **Doctor** | `doctor01@hms.com` / `john@hms.com` | `doctor123` | Consultation schedule, triage cases, clinical workflows (`/dashboard/doctor`) |
+| **Staff** | `ahmad@gmail.com` | `ahmad12345` | Hospital operations, admissions, billing, patients (`/dashboard`) |
+| **Patient** | `patient001@hms.com` | `patient123` | Personal visits, prescriptions, medical records, invoices (`/dashboard/patient`) |
 
 ---
 
